@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highlands &amp; Speyside — 1–9 August 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  :root{
+    --ink:#12343b; --slate:#28393d; --stone:#f1ece1; --stone-2:#e7dfcd;
+    --hair:#c9bea6; --amber:#b06a17; --amber-2:#cf8b2c; --heather:#6a4a80;
+    --mist:#5c6d6f; --white:#fbf9f4;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--stone);color:var(--slate);
+    font-family:"Inter",system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px 80px;}
+
+  header{position:relative;background:var(--ink);color:var(--white);overflow:hidden;border-bottom:3px solid var(--amber);}
+  header .contours{position:absolute;inset:0;opacity:.16;pointer-events:none;
+    background:
+      radial-gradient(120% 90% at 78% 18%, transparent 38%, rgba(207,139,44,.55) 38.4%, transparent 39.2%),
+      radial-gradient(150% 120% at 78% 18%, transparent 50%, rgba(207,139,44,.4) 50.3%, transparent 51%),
+      radial-gradient(190% 150% at 78% 18%, transparent 62%, rgba(207,139,44,.3) 62.2%, transparent 63%),
+      radial-gradient(240% 190% at 78% 18%, transparent 74%, rgba(207,139,44,.22) 74.2%, transparent 75%);}
+  .head-inner{position:relative;max-width:820px;margin:0 auto;padding:46px 20px 40px;}
+  .eyebrow{font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--amber-2);margin:0 0 18px;}
+  h1{font-family:"Bricolage Grotesque",serif;font-weight:800;font-size:clamp(34px,7vw,58px);line-height:1.02;letter-spacing:-.015em;margin:0 0 16px;}
+  h1 .amp{color:var(--amber-2);font-weight:500;}
+  .subline{font-size:16px;color:#d8e0df;max-width:52ch;margin:0;}
+  .head-meta{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:26px;font-family:"Spline Sans Mono",monospace;font-size:13px;color:#cdd6d5;}
+  .head-meta b{color:var(--white);font-weight:600;}
+
+  .section-label{font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--mist);margin:54px 0 6px;display:flex;align-items:center;gap:12px;}
+  .section-label::after{content:"";flex:1;height:1px;background:var(--hair);}
+
+  .timeline{position:relative;margin-top:26px;padding-left:34px;}
+  .timeline::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:var(--hair);}
+  .day{position:relative;margin-bottom:22px;}
+  .day::before{content:"";position:absolute;left:-34px;top:6px;width:20px;height:20px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--ink);border:2px solid var(--amber-2);}
+  .day.pivot::before{background:var(--amber);border-color:var(--ink);}
+
+  .card{background:var(--white);border:1px solid var(--stone-2);border-radius:3px;box-shadow:0 1px 0 rgba(18,52,59,.04);overflow:hidden;}
+  .card-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:16px 20px 12px;flex-wrap:wrap;}
+  .daynum{font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);}
+  .date{font-family:"Spline Sans Mono",monospace;font-size:13px;color:var(--mist);}
+  .card-title{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:21px;letter-spacing:-.01em;color:var(--ink);margin:2px 0 0;flex-basis:100%;}
+  .base{font-size:13px;color:var(--mist);margin:6px 0 0;flex-basis:100%;}
+  .base b{color:var(--slate);font-weight:600;}
+
+  .daymap{height:190px;background:#dfe6e2;border-top:1px solid #efe9db;border-bottom:1px solid #efe9db;}
+  .leaflet-container{font-family:"Inter",sans-serif;}
+  .pin-label{background:rgba(18,52,59,.9);color:#fff;border:none;border-radius:2px;
+    font-family:"Spline Sans Mono",monospace;font-size:10px;letter-spacing:.03em;
+    padding:2px 5px;box-shadow:none;white-space:nowrap;}
+  .pin-label::before{display:none;}
+
+  .stops{list-style:none;margin:0;padding:6px 20px 8px;}
+  .stop{padding:13px 0;border-bottom:1px dashed #e5ddca;}
+  .stop:last-child{border-bottom:none;}
+  .stop-row{display:flex;gap:12px;align-items:baseline;}
+  .stop-time{font-family:"Spline Sans Mono",monospace;font-size:12px;color:var(--amber);white-space:nowrap;min-width:74px;padding-top:1px;}
+  .stop-body{flex:1;}
+  .stop-name{font-weight:600;color:var(--ink);font-size:16px;}
+  .stop-name a{text-decoration:none;border-bottom:1px solid var(--amber-2);}
+  .stop-name a:hover{background:#f6ead2;}
+  .stop-note{font-size:14.5px;color:var(--slate);margin-top:4px;}
+  .learn{display:inline-block;margin-top:7px;font-family:"Spline Sans Mono",monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--heather);border-bottom:1px solid transparent;}
+  .learn:hover{border-bottom-color:var(--heather);}
+  .photos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:11px;}
+  .photos img{width:100%;height:94px;object-fit:cover;border-radius:3px;border:1px solid var(--stone-2);background:#e7dfcd;display:block;}
+  .photo-cap{font-size:11.5px;color:var(--mist);margin-top:5px;font-style:italic;}
+  .hotel{padding:2px 20px 6px;}
+  .hotel-slug{font-size:14.5px;color:var(--slate);margin:0 0 2px;}
+  .eat{margin:0 20px;padding:13px 0 2px;border-top:1px dashed #e5ddca;}
+  .eat-label{font-family:"Spline Sans Mono",monospace;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:7px;}
+  .eat p{margin:0 0 7px;font-size:14px;line-height:1.5;}
+  .eat p:last-child{margin-bottom:0;}
+  .eat .role{font-family:"Spline Sans Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mist);margin-right:2px;}
+  .eat a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--amber-2);}
+  .eat a:hover{background:#f6ead2;}
+  .pin{font-size:12px;color:var(--mist);}
+
+  .card-foot{padding:12px 20px 16px;border-top:1px solid #efe9db;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .route-link{font-family:"Spline Sans Mono",monospace;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;color:var(--ink);border:1px solid var(--hair);border-radius:2px;padding:7px 12px;transition:background .15s,border-color .15s,color .15s;}
+  .route-link:hover{background:var(--ink);color:var(--white);border-color:var(--ink);}
+  .drive{font-size:13px;color:var(--mist);}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px;}
+  @media(max-width:640px){.grid{grid-template-columns:1fr;}}
+  .panel{background:var(--white);border:1px solid var(--stone-2);border-radius:3px;padding:16px 18px;}
+  .panel h3{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:16px;color:var(--ink);margin:0 0 10px;}
+  .kv{font-size:14px;margin:0 0 8px;}
+  .kv:last-child{margin-bottom:0;}
+  .kv .k{font-family:"Spline Sans Mono",monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);display:block;}
+  .kv .v{color:var(--slate);}
+  .ref{font-family:"Spline Sans Mono",monospace;color:var(--ink);font-weight:600;}
+  .flag{border-left:3px solid var(--amber);background:#faf3e4;padding:12px 16px;border-radius:2px;font-size:14px;margin:14px 0 0;}
+  .flag b{color:var(--amber);}
+  ul.plain{margin:8px 0 0;padding-left:18px;font-size:14px;}
+  ul.plain li{margin:5px 0;}
+  .open{color:var(--heather);font-weight:600;}
+
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--hair);font-size:13px;color:var(--mist);}
+  @media print{header .contours{opacity:.1;}body{background:#fff;}.card,.panel{box-shadow:none;}.daymap{display:none;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="contours"></div>
+  <div class="head-inner">
+    <p class="eyebrow">Road trip · Scotland · 9 days</p>
+    <h1>Highlands <span class="amp">&amp;</span> Speyside</h1>
+    <p class="subline">Two bases — the Great Glen and the Spey — radiating out to lochs, mountains, a Highland games, and a royal castle. One car, no repacking between day trips.</p>
+    <div class="head-meta">
+      <span><b>Sat 1 Aug</b> → <b>Sun 9 Aug 2026</b></span>
+      <span>2 travellers</span>
+      <span>Fly out: <b>Aberdeen (ABZ)</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="section-label">Base 1 · Glengarry Castle Hotel, Invergarry</div>
+  <div class="timeline">
+
+    <!-- DAY 1 -->
+    <div class="day">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Day 01</span><span class="date">Sat · 1 Aug</span>
+          <h2 class="card-title">Arrive &amp; settle — Loch Ness south</h2>
+          <p class="base">Base: <b>Glengarry Castle Hotel</b> · check in 2 PM · <a class="learn" style="margin-top:0;vertical-align:baseline" href="https://www.glengarry.net/" target="_blank" rel="noopener">Hotel info →</a></p>
+        </div>
+        <div class="hotel">
+          <p class="hotel-slug">A Victorian baronial mansion in 60 acres of woodland on the shore of Loch Oich, midway down the Great Glen. Its own restaurant serves Highland produce in a grand dining room, and the lawns run down to the ruined Invergarry Castle. The A82 out front puts Loch Ness, Fort William and Skye all within day-trip reach.</p>
+          <div class="photos">
+            <img loading="lazy" alt="Glengarry Castle Hotel — the baronial mansion in its woodland on the shore of Loch Oich" src="assets/01-glengarry-castle-hotel-the-baronial-mans.jpg">
+            <img loading="lazy" alt="Glengarry Castle Hotel — a quiet bench looking down Loch Oich from the hotel grounds" src="assets/02-glengarry-castle-hotel-a-quiet-bench-loo.jpg">
+            <img loading="lazy" alt="Glengarry Castle Hotel — garden steps running down toward the loch" src="assets/03-glengarry-castle-hotel-garden-steps-runn.jpg">
+          </div>
+        </div>
+        <div class="daymap" id="map-1"></div>
+        <ul class="stops">
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Evening</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=57.1448064%2C-4.6805166&query_place_id=ChIJ6zsb9A0hj0gR0DyvIZcPFxI" target="_blank" rel="noopener">Fort Augustus</a> <span class="pin">↗</span></div>
+              <div class="stop-note">A village at the south end of Loch Ness where the Caledonian Canal steps down to the loch through a flight of five staircase locks. Watch the boats work through, then stroll the towpath — an easy first outing after the drive.</div>
+              <a class="learn" href="https://www.scottishcanals.co.uk/canals/caledonian-canal/" target="_blank" rel="noopener">Learn more →</a>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Fort Augustus" src="https://lh3.googleusercontent.com/place-photos/AJRVUZPz2j7wE1xmQDpJQL5YmWriBetALqwfdLuuAGmiwcr91Z27R0v4XD32nUhZWcCtpibEw47Dozwb1dlS5AEMMc9PrgMAUTTV5L98AUkAkWuGshi_J6uDdj2FYx7wZ4I64HufrNLKixebEMAvlQ=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Fort Augustus" src="https://lh3.googleusercontent.com/place-photos/AJRVUZPjKtOrmNazTzgISM_4KlfwDV0HxXk6IlmI7mx_31Ywt1SEeBAL1nkiuQjerM8Kwkm652Z0CR-d5qRhyxXu16gTeN4M2uTbmwF1iZY2y9kH7d0LyEoiLSyzKk-Pb1hpZCvxu0aeIl9fHzjUgQ=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Fort Augustus" src="https://lh3.googleusercontent.com/place-photos/AJRVUZM8wJT0-pfe_8SIXRt67KyF35DCd-KNiz2U9lC4khOVx3BHs9MIUkEiG-ZzsqSPDu56gNOiSK5zG2B_ll-k_7i3SlABS22pC8AweLSP2syDDl6No87Az8No1FT_UfTqoboLv2aWr0UP1dNr=s1200-w800-h600">
+              </div>
+            </div>
+          </div></li>
+        </ul>
+        <div class="eat">
+          <div class="eat-label">Eat</div>
+          <p><span class="role">Dinner</span> <a href="https://www.google.com/maps/search/?api=1&query=The%20Lock%20Inn%20Fort%20Augustus&query_place_id=ChIJ06m3A34hj0gRaah5zJqL1ZA" target="_blank" rel="noopener">The Lock Inn</a>, Fort Augustus — canalside pub with some of the Highlands' best fish &amp; chips. Or dine in at Glengarry's own dining room.</p>
+        </div>
+        <div class="card-foot">
+          <a class="route-link" href="https://www.google.com/maps/dir/?api=1&origin=57.069086,-4.778156&destination=57.1448064,-4.6805166&travelmode=driving" target="_blank" rel="noopener">Open day route ↗</a>
+          <span class="drive">Hotel → Fort Augustus · ~10 min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Day 02</span><span class="date">Sun · 2 Aug</span>
+          <h2 class="card-title">Glencoe &amp; Glenfinnan</h2>
+          <p class="base">Base: <b>Glengarry Castle Hotel</b></p>
+        </div>
+        <div class="daymap" id="map-2"></div>
+        <ul class="stops">
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Morning</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=56.6615284%2C-4.9174463&query_place_id=ChIJizGz8JkviUgR_-1UzDdGTp0" target="_blank" rel="noopener">Glencoe</a> <span class="pin">↗</span></div>
+              <div class="stop-note">A glacial valley flanked by the Three Sisters ridge and Buachaille Etive Mòr, cared for by the National Trust since 1935 and scene of the 1692 MacDonald massacre. A well-known film location — Skyfall, Harry Potter, Braveheart — with free roadside viewpoints and short trails.</div>
+              <a class="learn" href="https://www.nts.org.uk/visit/places/glencoe" target="_blank" rel="noopener">Learn more →</a>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Glencoe" src="https://lh3.googleusercontent.com/place-photos/AJRVUZMceTpZiPp7MNxYf8tk1BS1aQqQ_XLpapr1SEprx27D2HdxtqlGQkqUlLpXqUSmo_fDq0eCTV-8DWBZSoezSjAIxIkilzSpbQDc-u4uXs3ikb7Az2huwjWNhlhyv0TkH9m1Q-pmtftjmlhRAQ=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Glencoe" src="https://lh3.googleusercontent.com/place-photos/AJRVUZNjHLt6LXkLJaizfMea3PrJkLClEVfeIePJc77OVy3WaOxyedV9PhmmnYW9Id0Xj91BfZNsHwXjJ1AYNHywD3cslrgGBdUK_4EQhOvcXOD1lKvF3n4BROKeuU_r4HhjUBfgwx-s92cnBmfuzQ=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Glencoe" src="https://lh3.googleusercontent.com/place-photos/AJRVUZOYaT9Figd5qaQ71vjhlcBkyPrbcd4UAEP72gfRaJJO5wGu4_uAUVxZ4pADa_pYoP4hk29sVV7rk3U5_YFhUuXPEl5_Ow2d6wyEVeuaS7M9UrWNOoKk744LjvOd1xTHt1qPEHxouqEz_nMygE4=s1200-w800-h600">
+              </div>
+            </div>
+          </div></li>
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Afternoon</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=56.8762172%2C-5.4317589&query_place_id=ChIJtaE4NcmzjkgR5z8-41V_s_c" target="_blank" rel="noopener">Glenfinnan Viaduct</a> <span class="pin">↗</span></div>
+              <div class="stop-note">A 21-arch concrete railway viaduct completed in 1901, world-famous from the Harry Potter films. In season the Jacobite steam train crosses late morning (departs Fort William ~10:15) — time your spot for it. The car park fills by 9:30 in peak weeks.</div>
+              <a class="learn" href="https://westcoastrailways.co.uk/jacobite/steam-train-trip" target="_blank" rel="noopener">Jacobite train →</a>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Glenfinnan Viaduct" src="https://lh3.googleusercontent.com/place-photos/AJRVUZN4_7FzYULijrk_8iaY60O7WytwgjYcYEpyOC1SPJ390cpRBhq_XSO6yno1AGs5MsMKDYst709fhyOFylMPoB0FRAyq-0Rgq5gHLrKZ6fika8-Hsb_3KhdmllDm1ruQjWnQIv1wOseFseNokE8=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Glenfinnan Viaduct" src="https://lh3.googleusercontent.com/place-photos/AJRVUZMIIVyhqY0aP4PZO4IwZFZNRiJlCv-yXAP1-r5x2sInpE0sHdNP73BY-WVuCCWViBbpQTiKvYeDgv36cFyE_KIFCyE6gIfgmWkCuN0eDo3kH9HAmmeXRssYuFDhy3xJXnunRoe67XlZYXvdgA=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Glenfinnan Viaduct" src="https://lh3.googleusercontent.com/place-photos/AJRVUZN_36EbqhNDxDwcwzWAkOzqgg4jWEAK9-cjDDJ8IJCOqKbPn7yaB4_RMrcLyVrtkbr7MpJSoupjYIhwsZmZepfrOt8MPASgRFv__mOR_Yor_P6c7c_QgzFxUqR3j_2d53OHO1qv2mW0Uc8sxs1691gf1w=s1200-w800-h600">
+              </div>
+            </div>
+          </div></li>
+        </ul>
+        <div class="eat">
+          <div class="eat-label">Eat</div>
+          <p><span class="role">Lunch</span> <a href="https://www.google.com/maps/search/?api=1&query=Moss%20Glencoe&query_place_id=ChIJXVzsqMo3iUgR4Xgb-MDkb0c" target="_blank" rel="noopener">Moss</a> (Glencoe) — tiny family-run room, seasonal Scottish cooking; book ahead.</p>
+          <p><span class="role">Dinner</span> <a href="https://www.google.com/maps/search/?api=1&query=Crannog%20at%20Garrison%20West%20Fort%20William&query_place_id=ChIJRWAnWavMjkgREqr-bYdbEig" target="_blank" rel="noopener">Crannog at Garrison West</a> (Fort William) — lochside seafood: oysters, mussels, scallops.</p>
+        </div>
+        <div class="card-foot">
+          <a class="route-link" href="https://www.google.com/maps/dir/?api=1&origin=57.069086,-4.778156&destination=56.8762172,-5.4317589&waypoints=56.6615284%2C-4.9174463&travelmode=driving" target="_blank" rel="noopener">Open day route ↗</a>
+          <span class="drive">Loop via Fort William · ~3 hr driving</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Day 03</span><span class="date">Mon · 3 Aug</span>
+          <h2 class="card-title">Loch Ness north</h2>
+          <p class="base">Base: <b>Glengarry Castle Hotel</b></p>
+        </div>
+        <div class="daymap" id="map-3"></div>
+        <ul class="stops">
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Morning</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=57.3241399%2C-4.4420013&query_place_id=ChIJC2d4AeITj0gR8C09zc8mYZk" target="_blank" rel="noopener">Urquhart Castle</a> <span class="pin">↗</span></div>
+              <div class="stop-note">A sprawling medieval ruin on the shore of Loch Ness near Drumnadrochit, run by Historic Environment Scotland, with a visitor centre and one of the best loch viewpoints anywhere. Pre-book — parking is limited and it gets busy; boat cruises leave from nearby.</div>
+              <a class="learn" href="https://www.historicenvironment.scot/visit-a-place/places/urquhart-castle/" target="_blank" rel="noopener">Learn more →</a>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Urquhart Castle" src="https://lh3.googleusercontent.com/place-photos/AJRVUZMkHo6pi7g79oC9t3OPASHXZmMtn7D9HdygrQ0kUKcpB-aON4k3WZMjuQtD-IrSyqE73tDbiEDIbnud8Jpo1QSgqnJ0kS17sn0zl9UyF5EF5Wns3Kp0NA1Hg2F9mGmqVaR0irLsPefNIrVCyQ=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Urquhart Castle" src="https://lh3.googleusercontent.com/place-photos/AJRVUZMnyv-lH1mUCltVrzprEB94n1cmppvI8SR-uoVqxXF4QPkeAWV8AdtLudlO6nO4EacXlQzgWOrgwuyEKauJm4cP_BCb1ErlQOuv7vCpgFWi_9QTjKqxTSTByzibBq31PFKxLYNmSeaoMSRlBlY=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Urquhart Castle" src="https://lh3.googleusercontent.com/place-photos/AJRVUZMaTx9zQNBgP5uIlThzL6v3SjyUT517_VwQBR_ihGoHbGHDtllwahD4IWT04Fg0s4_8XUiXalQThu893d49GKRjMff8SITPBQbrsoLtfVeadgOeZ7SthNx-zG4XyH3dTUJWP5YteAeVZx75gqc=s1200-w800-h600">
+              </div>
+            </div>
+          </div></li>
+        </ul>
+        <div class="eat">
+          <div class="eat-label">Eat</div>
+          <p><span class="role">Lunch</span> <a href="https://www.google.com/maps/search/?api=1&query=Ness%20Deli%20Drumnadrochit&query_place_id=ChIJ-28vOHgRj0gRt9aOxJ5UMvQ" target="_blank" rel="noopener">Ness Deli</a> (Drumnadrochit) — famed quiches, pies and bakes, minutes from Urquhart.</p>
+          <p><span class="role">Dinner</span> Back at Glengarry's dining room, or <a href="https://www.google.com/maps/search/?api=1&query=The%20Lock%20Inn%20Fort%20Augustus&query_place_id=ChIJ06m3A34hj0gRaah5zJqL1ZA" target="_blank" rel="noopener">The Lock Inn</a> in Fort Augustus.</p>
+        </div>
+        <div class="card-foot">
+          <a class="route-link" href="https://www.google.com/maps/dir/?api=1&origin=57.069086,-4.778156&destination=57.3241399,-4.4420013&travelmode=driving" target="_blank" rel="noopener">Open day route ↗</a>
+          <span class="drive">Hotel → Urquhart · ~35 min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="day">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Day 04</span><span class="date">Tue · 4 Aug</span>
+          <h2 class="card-title">Fort William &amp; Ben Nevis</h2>
+          <p class="base">Base: <b>Glengarry Castle Hotel</b></p>
+        </div>
+        <div class="daymap" id="map-4"></div>
+        <ul class="stops">
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Morning</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=56.7968571%2C-5.0035505&query_place_id=ChIJ8-XxipcyiUgRcZqt_3eLlG4" target="_blank" rel="noopener">Ben Nevis</a> <span class="pin">↗</span></div>
+              <div class="stop-note">Britain's highest mountain at 1,345 m. The Mountain (Pony) Track from Glen Nevis is the standard route — strenuous, 7–9 hrs return, real hillwalking. For a lighter day, take the lower Glen Nevis trails or the Nevis Range gondola, then Fort William town for lunch.</div>
+              <a class="learn" href="https://www.walkhighlands.co.uk/munros/ben-nevis" target="_blank" rel="noopener">Route guide →</a>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Ben Nevis" src="https://lh3.googleusercontent.com/place-photos/AJRVUZOqAbCQR98ZDT2Fzi7MV3KAZ8FyuEQyOmuiQdfPoBBXpRy0fATN2qnvTcmqgHjFq0-iFRKpewzWoRr3L3uMV-RKBOzcLCriMF9oris_s6xSR3_u5TPMdf4JWlwB681T5oXrp0KbBgKOreXk0PcA6Ibi=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Ben Nevis" src="https://lh3.googleusercontent.com/place-photos/AJRVUZPuzAVlEGwhfdYak04KjnfGo7wipGFLYFI0uQeWFTv2glMC9cIA0sRIm84HutVys3FSzbtl9h2Xra3HaIsLrChvrIZAm_qvebvHWvTqJAjuWs8f_dd8ht5l-Nin0JJmCm7_WmVOoLxOO0dz7Q=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Ben Nevis" src="https://lh3.googleusercontent.com/place-photos/AJRVUZPcSoL8cm16Dd6l77NPJaRrcP8dNW6yMw1z-rpQi_abu5ECWrP6b2HD3VkduBLf_anfheAHPxFzrnEH57DuL1CRs-uWSHNmjZOsTLpLwtj5Cs0TWfUteACBrRw5XdqL6mUXGIcLFhbFwYUiys8=s1200-w736-h491">
+              </div>
+            </div>
+          </div></li>
+        </ul>
+        <div class="eat">
+          <div class="eat-label">Eat</div>
+          <p><span class="role">Lunch</span> <a href="https://www.google.com/maps/search/?api=1&query=The%20Highland%20Cook%20Fort%20William&query_place_id=ChIJJUMVebLNjkgRgY4NNN8i3_E" target="_blank" rel="noopener">The Highland Coo..k</a> (Fort William) — hearty Scottish plates, standout haggis.</p>
+          <p><span class="role">Dinner</span> <a href="https://www.google.com/maps/search/?api=1&query=The%20Geographer%20Fort%20William&query_place_id=ChIJkfh3NqvMjkgRHmPixSmuz68" target="_blank" rel="noopener">The Geographer</a> (Fort William) — buzzy bistro, local beers and fresh seafood.</p>
+        </div>
+        <div class="card-foot">
+          <a class="route-link" href="https://www.google.com/maps/dir/?api=1&origin=57.069086,-4.778156&destination=56.7968571,-5.0035505&travelmode=driving" target="_blank" rel="noopener">Open day route ↗</a>
+          <span class="drive">Hotel → Ben Nevis area · ~50 min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day pivot">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Day 05</span><span class="date">Wed · 5 Aug</span>
+          <h2 class="card-title">Isle of Skye Highland Games</h2>
+          <p class="base">Base: <b>Glengarry Castle Hotel</b> · leave ~6:45–7 AM</p>
+        </div>
+        <div class="daymap" id="map-5"></div>
+        <ul class="stops">
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">By 9:30 AM</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=57.4124%2C-6.1953" target="_blank" rel="noopener">Skye Highland Games — The Lump, Portree</a> <span class="pin">↗</span></div>
+              <div class="stop-note">One of Scotland's oldest gatherings, held on The Lump above Portree harbour since 1877 — caber toss, tug-of-war, solo piping, Highland dancing, plus a hill race and yacht race. A procession leaves Somerled Square at 9:45; local events start 10:00, open events 11:45, running to ~5 PM. Tickets booked — 2 adults. Arrive early; parking and seating fill fast, and bring wet-weather gear. Keep it games-only; home by ~8 PM.</div>
+              <a class="learn" href="https://www.skye-highland-games.co.uk/" target="_blank" rel="noopener">Games &amp; tickets →</a>
+              <div class="photos">
+                <img loading="lazy" alt="Athlete leaping into a heavy-weight throw at the Skye Highland Games" src="assets/04-athlete-leaping-into-a-heavy-weight-thro.jpg">
+                <img loading="lazy" alt="Competitor balancing the caber before the toss" src="assets/05-competitor-balancing-the-caber-before-th.jpg">
+                <img loading="lazy" alt="Weight over the bar in the heavy events" src="assets/06-weight-over-the-bar-in-the-heavy-events.jpg">
+              </div>
+              <div class="photo-cap">The heavy events on The Lump — the weight throw, the caber, and weight-over-the-bar, feet from the crowd.</div>
+              <div class="photos">
+                <img loading="lazy" alt="Young piper competing in solo piping" src="assets/07-young-piper-competing-in-solo-piping.jpg">
+                <img loading="lazy" alt="Highland dancers mid-step on the boards" src="assets/08-highland-dancers-mid-step-on-the-boards.jpg">
+                <img loading="lazy" alt="Dancers waiting their turn at the platform" src="assets/09-dancers-waiting-their-turn-at-the-platfo.jpg">
+              </div>
+              <div class="photo-cap">Solo piping and Highland dancing run alongside the field events all afternoon.</div>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Isle of Skye" src="https://lh3.googleusercontent.com/place-photos/AJRVUZNvuFHgWYLwYau_EB6FpeXWv3WyWcNUtHQ0eGn6AR-B6v8tYxsi67uO3RZOGjNvDw-PE2RfFtFBbScRNLEOOsiVwUDb5-Ai2M1WDCXMWUdGVQDl0YzuiCfWy09jmYtZckx-JP5mffHJ83DE9w=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Isle of Skye" src="https://lh3.googleusercontent.com/place-photos/AJRVUZNLVyVs0wvDjSICCyepAZtz5YmnUm0AzpLoXMCKGbmwHQoT6Qm8dMzT8lZzt11qYusN2pP0ga9-9UOxZBypLJC56OS_2lZEvnG7RLiQo021rpSChCZjpL-VngO4f7RD23LtFhOVkQE_7Rohuw=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Isle of Skye" src="https://lh3.googleusercontent.com/place-photos/AJRVUZPVEmYD5N60OQpay6m-HRMJk2Vs_iNjMlceYIDpcJpkptatlH9T08THpuV-2kSMijKaw13mG-1OvGEYC94h-jMrLMbjECYFGkdaUg-WVHaMkWAiZz3mHkCoenbWrdjA7q0PEZOKrqh5UjoraRo=s1200-w800-h600">
+              </div>
+              <div class="photo-cap">Isle of Skye scenery — the Storr, a short drive from Portree.</div>
+            </div>
+          </div></li>
+        </ul>
+        <div class="eat">
+          <div class="eat-label">Eat</div>
+          <p><span class="role">Lunch</span> <a href="https://www.google.com/maps/search/?api=1&query=Sea%20Breezes%20Portree&query_place_id=ChIJw0BBvC0yjEgRNVtV9vap2a0" target="_blank" rel="noopener">Sea Breezes</a> (Portree) — fresh-off-the-boat seafood at the pier; expect a queue, doubly so on games day.</p>
+          <p><span class="role">Dinner</span> <a href="https://www.google.com/maps/search/?api=1&query=Scorrybreac%20Restaurant%20Portree&query_place_id=ChIJx3irlzEyjEgRrgGMaxmEkGA" target="_blank" rel="noopener">Scorrybreac</a> (Portree) — intimate near-Michelin tasting menu if you linger; otherwise a light supper back at Glengarry after the drive.</p>
+        </div>
+        <div class="card-foot">
+          <a class="route-link" href="https://www.google.com/maps/dir/?api=1&origin=57.069086,-4.778156&destination=57.4124,-6.1953&travelmode=driving" target="_blank" rel="noopener">Open day route ↗</a>
+          <span class="drive">Hotel → Portree · ~2.5 hr each way</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Base 2 · Craigellachie Hotel of Speyside, Aberlour</div>
+  <div class="timeline">
+
+    <!-- DAY 6 -->
+    <div class="day pivot">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Day 06</span><span class="date">Thu · 6 Aug</span>
+          <h2 class="card-title">Move east — Culloden &amp; Glenlivet</h2>
+          <p class="base">Check out <b>Glengarry</b> (11 AM) → check in <b>Craigellachie Hotel</b> (3 PM) · <a class="learn" style="margin-top:0;vertical-align:baseline" href="https://craigellachiehotel.com/" target="_blank" rel="noopener">Hotel info →</a></p>
+        </div>
+        <div class="hotel">
+          <p class="hotel-slug">A restored 1893 hotel above the meeting of the Fiddich and Spey, in the heart of malt-whisky country. It's home to the Quaich Bar — 700-plus single malts — plus the 300-year-old Spey Inn pub and the GEAMAIR restaurant, with the Macallan and a dozen distilleries a short drive away. The Speyside Way footpath and the landmark Craigellachie Bridge are on the doorstep.</p>
+          <div class="photos">
+            <img loading="lazy" alt="The Craigellachie Hotel — the hotel above the Spey, in the heart of Speyside" src="assets/10-the-craigellachie-hotel-the-hotel-above.jpg">
+            <img loading="lazy" alt="The Craigellachie Hotel — a Snug Double room dressed in Speyside tartan" src="assets/11-the-craigellachie-hotel-a-snug-double-ro.jpg">
+            <img loading="lazy" alt="The Craigellachie Hotel — dinner in the hotel's Copper Dog / restaurant" src="assets/12-the-craigellachie-hotel-dinner-in-the-ho.jpg">
+          </div>
+        </div>
+        <div class="daymap" id="map-6"></div>
+        <ul class="stops">
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Late morn</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=57.4777898%2C-4.095711&query_place_id=ChIJEyd4_hp6j0gRJ0b18XU0fdg" target="_blank" rel="noopener">Culloden Battlefield</a> <span class="pin">↗</span></div>
+              <div class="stop-note">The windswept moor where the 1746 battle ended the Jacobite rising in under an hour. The National Trust visitor centre lays out both sides of the story, and clan grave-markers stand out on the field itself. Allow ~2 hrs.</div>
+              <a class="learn" href="https://www.nts.org.uk/visit/places/culloden" target="_blank" rel="noopener">Learn more →</a>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Culloden Battlefield" src="https://lh3.googleusercontent.com/place-photos/AJRVUZNfUn5fpPIcARcFnAGHNgD_lAYdgy0Ud596NLiXqTZRByogJ16n_fYngRNgA0NgkLOYy_znd3rD5HngWW54fGU88faTbUtSPW_--H-N-M-Ccg9kw_29cd-vppqO8_iUNVs8tPwixhik-YDx21FzOmKefw=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Culloden Battlefield" src="https://lh3.googleusercontent.com/place-photos/AJRVUZPEaY8YWzoikZcHGrP-bnloYto4bmMlgskJUzKBEk3T069YT9J6mmwN-4IrOCkuKqLYOOFUSMEFaohpg5q-qGPB2w4sZ2zm80LNJu4xSXqHhmVxmlrXvQBheWUhGb0INyYm_Z2zVIlLvFgtoD8sGgTsTw=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Culloden Battlefield" src="https://lh3.googleusercontent.com/place-photos/AJRVUZNpC29qaOuWRems9JC-puS9fKhc263mS46pJsBGw9nvKaojQP7o8eacPrZFwbsUAQ4oBEv5jg-sKsUZN7cabVpECaTN7uRhivuwhZIXszhgMCIkuA60MD5zgbmlSMmgcx7eCPCkZLvju2FTAdU2joDr1A=s1200-w800-h600">
+              </div>
+            </div>
+          </div></li>
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Afternoon</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=57.3434444%2C-3.3385562&query_place_id=ChIJQXbCofG9hUgR22Sf2MWTpn0" target="_blank" rel="noopener">The Glenlivet Distillery</a> <span class="pin">↗</span></div>
+              <div class="stop-note">Your first Speyside dram — the first licensed distillery in the parish (1824), set in a remote glen once notorious for illicit stills. Book the tour ahead; drivers can take their tasting away in miniatures. Then on to the hotel.</div>
+              <a class="learn" href="https://www.theglenlivet.com/" target="_blank" rel="noopener">Tours &amp; booking →</a>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="The Glenlivet Distillery" src="https://lh3.googleusercontent.com/place-photos/AJRVUZPWeAhzzhqJ4eeTHhhhwMSWUcPjoaYnBpRLBpaOxJrx15fl9CmfmzHl619Nbby0CHdunHyuVe7mMbRAOWkPW0epz8msulttqi20vEB7vI-vmsv6IQSQzKV7qG0l6ngLn8BMIcpXm4ZSEWacy2E=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="The Glenlivet Distillery" src="https://lh3.googleusercontent.com/place-photos/AJRVUZPXsKneKxWU269sD4Qw99-V38oZbZSAkK_K7NwSQcHhdLcGwxfQrwCkzTx1aSwZkIXarNcIMCjny-5dpEXuonI-iSPPfK_oxcpOX0h4_528WXWay3bLK8TZoP8KpDoXxyjye3Y0BCoz9XpUqA=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="The Glenlivet Distillery" src="https://lh3.googleusercontent.com/place-photos/AJRVUZNlY9mS-qKChwhnzl8O7G697eX9OOBi8UdHGPV6tQLlXK-wYp1aEoyoodEFaAPYh7O6Hs70tBMeP8hfY_r2W0z4AgpqlH3XYnTSQpQVsS82EKR6jJ055XW1bxyCI5iRY6Y3ks3kSFC_dF7HsbU=s1200-w800-h600">
+              </div>
+            </div>
+          </div></li>
+        </ul>
+        <div class="eat">
+          <div class="eat-label">Eat</div>
+          <p><span class="role">Lunch</span> <a href="https://www.google.com/maps/search/?api=1&query=The%20Gathern%20Cafe%20Aberlour&query_place_id=ChIJWY-2RP6lhUgR1vpCFh-zTmk" target="_blank" rel="noopener">The Gather'n Café</a> (Aberlour) on arrival, or the café at Glenlivet en route.</p>
+          <p><span class="role">Dinner</span> In-house at the Craigellachie — GEAMAIR's tasting menu, or the 300-year-old <a href="https://www.google.com/maps/search/?api=1&query=Spey%20Inn%20Craigellachie&query_place_id=ChIJhboKgIilhUgRsbQ7QtS4J7I" target="_blank" rel="noopener">Spey Inn</a> pub.</p>
+        </div>
+        <div class="card-foot">
+          <a class="route-link" href="https://www.google.com/maps/dir/?api=1&origin=57.069086,-4.778156&destination=57.489248,-3.190163&waypoints=57.4777898%2C-4.095711%7C57.3434444%2C-3.3385562&travelmode=driving" target="_blank" rel="noopener">Open day route ↗</a>
+          <span class="drive">Glengarry → Culloden → Glenlivet → Craigellachie</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 7 -->
+    <div class="day">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Day 07</span><span class="date">Fri · 7 Aug</span>
+          <h2 class="card-title">The Macallan &amp; the Spey</h2>
+          <p class="base">Base: <b>Craigellachie Hotel</b></p>
+        </div>
+        <div class="daymap" id="map-7"></div>
+        <ul class="stops">
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Booked slot</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=57.4847802%2C-3.2067766&query_place_id=ChIJaVVUUUGkhUgRoeHByeJGyQc" target="_blank" rel="noopener">The Macallan Estate</a> <span class="pin">↗</span></div>
+              <div class="stop-note">A £140m architect-designed distillery (opened 2018) set into the hillside above the Spey on the Easter Elchies estate, celebrated for its sherry-cask single malts. Visits are timed and appointment-only, over-18s; Friday is a public-tour day. Book well ahead — slots fill months out.</div>
+              <a class="learn" href="https://www.themacallan.com/en/experience-the-macallan/distillery" target="_blank" rel="noopener">Experiences →</a>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="The Macallan Estate" src="https://lh3.googleusercontent.com/place-photos/AJRVUZOcdcJKi2ZQ9lw9iyK2L2ll4U0y812S_XQy-jAU6hyhmBva23X-Rmc3P_1vfxYma0a24fAuYvwhd9mT_QrE5CX02w11Ufz7fwFg9ZGP-_gHPKuEv7Or_-hp8YEHuVtpm09Dx7AfKy9WaCP1k18=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="The Macallan Estate" src="https://lh3.googleusercontent.com/place-photos/AJRVUZNXSZlZJX52j0q0l511MiG6DV9vM7PZOnTvTJvy2YuFuqrHi-mzIOZUr7k-Z2_b6tx12qo1SbKKQEfCRiLTkbQtIF4PpT4hQFBRBro571ekVSKLNNR9bWW7Li3qjZFCjtukQrfZ46duMrRZtWc=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="The Macallan Estate" src="https://lh3.googleusercontent.com/place-photos/AJRVUZMMiec8XFeNWjNe4R39HmN3u45du5ng2byY_lRB5Ulo2LLc32L1X7O9Lp4baLU4Lq3Dno0Dj-bZkp-w2CzVwb-W6zda-CgP9gttBj4938hC2HSVqw9j8poLJyrzz_-8Pp51vOZbpP2pTH81eA=s1200-w800-h600">
+              </div>
+            </div>
+          </div></li>
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Rest of day</span>
+            <div class="stop-body">
+              <div class="stop-name">Speyside at your pace</div>
+              <div class="stop-note">Aberlour, the Speyside Cooperage and Glenfiddich are all within ~15 min. Back at the hotel, the Quaich Bar pours from a list of 700-plus whiskies.</div>
+              <div class="photos">
+                <img loading="lazy" alt="The Glenfiddich Distillery entrance and grounds" src="assets/13-the-glenfiddich-distillery-entrance-and.jpg">
+                <img loading="lazy" alt="Speyside Cooperage visitor centre sign" src="assets/14-speyside-cooperage-visitor-centre-sign.jpg">
+              </div>
+              <div class="photo-cap">Glenfiddich and the working Speyside Cooperage — both about 15 minutes from the hotel.</div>
+            </div>
+          </div></li>
+        </ul>
+        <div class="eat">
+          <div class="eat-label">Eat</div>
+          <p><span class="role">Lunch</span> <a href="https://www.google.com/maps/search/?api=1&query=The%20Mash%20Tun%20Aberlour&query_place_id=ChIJl7BuMWOkhUgRislVSOfNhgg" target="_blank" rel="noopener">The Mash Tun</a> (Aberlour) — whisky-hotel bistro on the banks of the Spey.</p>
+          <p><span class="role">Dinner</span> <a href="https://www.google.com/maps/search/?api=1&query=The%20Stillman%20Dufftown&query_place_id=ChIJq0HqWw2lhUgRvBjMcqKeOaA" target="_blank" rel="noopener">The Stillman</a> (Dufftown), walkable from Glenfiddich — or the hotel's Quaich Bar for 700+ malts.</p>
+        </div>
+        <div class="card-foot">
+          <a class="route-link" href="https://www.google.com/maps/dir/?api=1&origin=57.489248,-3.190163&destination=57.4847802,-3.2067766&travelmode=driving" target="_blank" rel="noopener">Open day route ↗</a>
+          <span class="drive">Hotel → Macallan · ~8 min</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 8 -->
+    <div class="day">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Day 08</span><span class="date">Sat · 8 Aug</span>
+          <h2 class="card-title">Flex day — Cairngorms</h2>
+          <p class="base">Base: <b>Craigellachie Hotel</b> · <span class="open">to confirm</span></p>
+        </div>
+        <div class="daymap" id="map-8"></div>
+        <ul class="stops">
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Option A</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=57.2005355%2C-3.8281798&query_place_id=ChIJYdwLblnxhUgRA3Kb1RzR3TM" target="_blank" rel="noopener">Aviemore &amp; Cairngorms</a> <span class="pin">↗</span></div>
+              <div class="stop-note">Main gateway to the UK's largest national park, ~50 min south. The Cairngorm funicular, Rothiemurchus pine forest, sandy-beached Loch Morlich and the free-ranging reindeer herd are all here — a green counterpoint to the whisky days.</div>
+              <a class="learn" href="https://www.visitcairngorms.com/" target="_blank" rel="noopener">Plan a day →</a>
+              <div class="photos">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Loch Morlich, Cairngorms" src="https://lh3.googleusercontent.com/place-photos/AJRVUZMiHtcQd5k_CHa1kcAYtXRm0YgX7UTqPhsqfkQLWTVOvB9a3dNx7irwEFfR2_FZ-59vrMZfcJneuIDRo07dVAQwO1y-MgwDOF_6txDITWcc5dU1Xjk7AFql4q91CyvfncfTqPPiD6tpdI-1tA=s1200-w730-h495">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Loch Morlich, Cairngorms" src="https://lh3.googleusercontent.com/place-photos/AJRVUZM37BCBoiMxCo13Zd5EKsqK2kdyOICUk09lzKjThYBb4QM5Xg33xTBKfVCzvTq7VLSoAFYsyiBYIVSECpVFnidM91j0oxWzKnq_RqunJI2jO_-D5zH54ROm3aIUT95NUZ_cTry4KeSahTUUYNk2OCIP=s1200-w800-h600">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Loch Morlich, Cairngorms" src="https://lh3.googleusercontent.com/place-photos/AJRVUZMTslpZS9gcfFiOurZS-q7qnUQrNi_Z1_k4VVREMWp1wiJFz03YhOPET3FK07by-tNe_hjtMZFaUSzwT1EFWoI5ZI9hiBLppk_ZoN8Kd0J1bVB_VH_G05Ik8Oum8CHU7fMLL0Hrb4Umk7KHqg=s1200-w800-h600">
+              </div>
+              <div class="photo-cap">Loch Morlich &amp; the Cairngorms, near Aviemore.</div>
+            </div>
+          </div></li>
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Option B</span>
+            <div class="stop-body">
+              <div class="stop-name">More Speyside</div>
+              <div class="stop-note">A second distillery day — Glenfiddich, Balvenie, Aberlour — plus the working Speyside Cooperage. Zero repositioning from the hotel.</div>
+              <div class="photos">
+                <img loading="lazy" alt="Glenfiddich still house — rows of copper pot stills" src="assets/15-glenfiddich-still-house-rows-of-copper-p.jpg">
+                <img loading="lazy" alt="The Glenfiddich Distillery building with its bronze stag" src="assets/16-the-glenfiddich-distillery-building-with.jpg">
+                <img loading="lazy" alt="Coopers building casks by hand at the Speyside Cooperage" src="assets/17-coopers-building-casks-by-hand-at-the-sp.jpg">
+              </div>
+              <div class="photo-cap">Option B: Glenfiddich’s still house and famous stag, and the coopers at work at the Speyside Cooperage.</div>
+            </div>
+          </div></li>
+        </ul>
+        <div class="eat">
+          <div class="eat-label">Eat</div>
+          <p><span class="role">Lunch</span> <a href="https://www.google.com/maps/search/?api=1&query=Delaneys%20Restaurant%20Aviemore&query_place_id=ChIJoTyJpVRfj0gRyaOtBAxY7jE" target="_blank" rel="noopener">Delaney's</a> (Aviemore) — inventive small plates; one of the best tables in the Highlands.</p>
+          <p><span class="role">Dinner</span> <a href="https://www.google.com/maps/search/?api=1&query=The%20Old%20Bridge%20Inn%20Aviemore&query_place_id=ChIJk_0cnYZfj0gROhnbdf219hw" target="_blank" rel="noopener">The Old Bridge Inn</a> (Aviemore) — riverside pub with local ales and live music.</p>
+        </div>
+        <div class="card-foot">
+          <a class="route-link" href="https://www.google.com/maps/dir/?api=1&origin=57.489248,-3.190163&destination=57.2005355,-3.8281798&travelmode=driving" target="_blank" rel="noopener">Open route to Aviemore ↗</a>
+          <span class="drive">Pick A or B</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 9 -->
+    <div class="day pivot">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Day 09</span><span class="date">Sun · 9 Aug</span>
+          <h2 class="card-title">Balmoral, then fly out</h2>
+          <p class="base">Check out <b>Craigellachie</b> (11 AM) → <b>Aberdeen Airport</b></p>
+        </div>
+        <div class="daymap" id="map-9"></div>
+        <ul class="stops">
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">10:00 AM</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=57.0396646%2C-3.2292362&query_place_id=ChIJX7xwyMPchUgRNgn8IT8UXdE" target="_blank" rel="noopener">Balmoral Castle</a> <span class="pin">↗</span></div>
+              <div class="stop-note">The royal family's Highland home on Royal Deeside, bought by Victoria and Albert in 1852, ~1.25 hr south through the Cairngorms. General Admission is booked — grounds, gardens and the ballroom exhibition. <b>Today is the final day of the 2026 visitor season.</b></div>
+              <a class="learn" href="https://balmoralcastle.com/" target="_blank" rel="noopener">Learn more →</a>
+              <div class="photos">
+                <img loading="lazy" alt="Balmoral gates carrying the King Charles III cypher, framed by summer blooms" src="assets/18-balmoral-gates-carrying-the-king-charles.jpg">
+                <img loading="lazy" alt="Balmoral Castle above its terraced walled gardens on Royal Deeside" src="assets/19-balmoral-castle-above-its-terraced-walle.jpg">
+                <img loading="lazy" referrerpolicy="no-referrer" alt="Balmoral Castle" src="https://lh3.googleusercontent.com/place-photos/AJRVUZNi0wUROSRpevR1gQZfQ8CtYK0X19Zd7cuUHA5URxeMmlaALBpNVYkquYNI-Zem6ZgGlsGT7hbmZDCjFsj1Z7AEoAn7uJO5cIT8Ak-46DFyqV-ktEuS8SdUmk6DQQGVnUSd7EEiOOphRJ9A4Q=s1200-w800-h600">
+              </div>
+              <div class="photo-cap">The castle gates and its walled terraced gardens — grounds open to General Admission on the season's final day.</div>
+            </div>
+          </div></li>
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">1:30 PM</span>
+            <div class="stop-body">
+              <div class="stop-name">Afternoon Tea at Balmoral</div>
+              <div class="stop-note">Booked, 2 guests — a set menu of estate and local produce (venison sausage roll, smoked trout, scones with clotted cream) served on bone china in the castle's dining area. Runs about two hours; ends ~3:30 PM.</div>
+              <a class="learn" href="https://balmoralcastle.com/shop/collections/afternoon-tea" target="_blank" rel="noopener">See the afternoon tea →</a>
+              <div style="margin-top:11px">
+                <img loading="lazy" alt="Balmoral afternoon tea — a tiered stand of sandwiches and cakes, warm scones, and tartan bone china on crisp white linen" src="assets/20-balmoral-afternoon-tea-a-tiered-stand-of.jpg" style="width:100%;height:250px;object-fit:cover;border-radius:3px;border:1px solid var(--stone-2);display:block;">
+              </div>
+              <div class="photo-cap">The set tea served on the estate's own tartan bone china — scones with clotted cream, finger sandwiches, and cakes on the tiered stand.</div>
+            </div>
+          </div></li>
+          <li class="stop"><div class="stop-row">
+            <span class="stop-time">Evening</span>
+            <div class="stop-body">
+              <div class="stop-name"><a href="https://www.google.com/maps/search/?api=1&query=57.203715%2C-2.200215&query_place_id=ChIJ1VCNN7oThEgR20bzyHyyCRE" target="_blank" rel="noopener">Aberdeen Airport (ABZ)</a> <span class="pin">↗</span></div>
+              <div class="stop-note">Scotland's northeast hub at Dyce, ~1.5 hr east of Balmoral, with direct British Airways and easyJet flights to London. Return flight not yet booked — a late-evening departure, or an airport-side overnight and fly Mon 10 Aug.</div>
+              <a class="learn" href="https://www.aberdeenairport.com/" target="_blank" rel="noopener">Airport info →</a>
+            </div>
+          </div></li>
+        </ul>
+        <div class="eat">
+          <div class="eat-label">Eat</div>
+          <p><span class="role">Midday</span> Afternoon Tea at Balmoral (booked, 1:30) — a substantial set menu; you won't need a separate lunch.</p>
+          <p><span class="role">Dinner</span> If flying late or overnighting near Aberdeen: <a href="https://www.google.com/maps/search/?api=1&query=Fish%20Shop%20Ballater&query_place_id=ChIJGc7IdJrRhUgR_F8ncRHnp8Q" target="_blank" rel="noopener">Fish Shop</a> (Ballater), near-Michelin seafood, or the <a href="https://www.google.com/maps/search/?api=1&query=Clachan%20Grill%20Ballater&query_place_id=ChIJ-eVd3D3QhUgRITUvTlww4tI" target="_blank" rel="noopener">Clachan Grill</a>.</p>
+        </div>
+        <div class="card-foot">
+          <a class="route-link" href="https://www.google.com/maps/dir/?api=1&origin=57.489248,-3.190163&destination=57.203715,-2.200215&waypoints=57.0396646%2C-3.2292362&travelmode=driving" target="_blank" rel="noopener">Open day route ↗</a>
+          <span class="drive">Craigellachie → Balmoral → Aberdeen</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Bookings</div>
+  <div class="grid">
+    <div class="panel">
+      <h3>Glengarry Castle Hotel</h3>
+      <p class="kv"><span class="k">Dates</span><span class="v">Sat 1 → currently Fri 7 Aug (6 nts)</span></p>
+      <p class="kv"><span class="k">Expedia itinerary</span><span class="v ref">on file</span></p>
+      <p class="kv"><span class="k">Room</span><span class="v">Superior Double · 2 adults</span></p>
+    </div>
+    <div class="panel">
+      <h3>Craigellachie Hotel</h3>
+      <p class="kv"><span class="k">Dates</span><span class="v">Thu 6 → Sun 9 Aug (3 nts)</span></p>
+      <p class="kv"><span class="k">Expedia itinerary</span><span class="v ref">on file</span></p>
+      <p class="kv"><span class="k">Room</span><span class="v">Snug Double · free cancel to 4 Aug</span></p>
+    </div>
+    <div class="panel">
+      <h3>Balmoral Castle</h3>
+      <p class="kv"><span class="k">Date</span><span class="v">Sun 9 Aug · GA 10:00 + Afternoon Tea 13:30</span></p>
+      <p class="kv"><span class="k">Order reference</span><span class="v ref">on file</span></p>
+      <p class="kv"><span class="k">Party</span><span class="v">2 adults · £187 paid</span></p>
+    </div>
+    <div class="panel">
+      <h3>Return flight</h3>
+      <p class="kv"><span class="k">From</span><span class="v">Aberdeen (ABZ) → London</span></p>
+      <p class="kv"><span class="k">Status</span><span class="v open">Not booked yet</span></p>
+      <p class="kv"><span class="k">Timing</span><span class="v">Late Sun 9 Aug, or overnight + Mon 10 Aug</span></p>
+    </div>
+  </div>
+
+  <div class="flag">
+    <b>Fix the Aug 6 overlap.</b> Glengarry currently runs through Fri 7 Aug, but you move to Craigellachie on Thu 6 Aug — so the night of <b>Aug 6 is double-booked</b>. Drop it from the Glengarry side before <b>25 July</b>, when free changes end (after that, up to 100% penalty).
+  </div>
+
+  <div class="section-label">Before you go</div>
+  <div class="panel">
+    <ul class="plain">
+      <li><b>Book Macallan now</b> — appointment only, public tours Thu–Sun, fills ~3 months ahead. Friday 7 Aug qualifies.</li>
+      <li><b>Balmoral is the hard stop</b> — 9 Aug is the final day of its 2026 visitor season; nothing after.</li>
+      <li><b>Car drop at Aberdeen</b> — a one-way return (pick up near the Great Glen, drop ABZ) likely carries a one-way fee; worth pricing against a round-trip.</li>
+      <li><b>Confirm the Aug 8 flex day</b> — Cairngorms scenery or a second Speyside distillery run.</li>
+      <li><b>Note:</b> Glenlivet (Aug 6) and Macallan (Aug 7) are back-to-back distilleries ~15 min apart — intentional, not a duplicate.</li>
+    </ul>
+  </div>
+
+  <footer>
+    Each card's map is live (needs an internet connection). Tap any <b>place name</b> to open it in Google Maps, <b>“Open day route”</b> for turn-by-turn directions along that day's stops, or <b>“Learn more”</b> for the official site. To share offline, use your browser's Print → Save as PDF.
+  </footer>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  var INK = "#12343b", AMBER = "#b06a17";
+  // Each day: ordered points [name, lat, lng, isBase]
+  var DAYS = {
+    "map-1": [["Glengarry Castle Hotel",57.069086,-4.778156,true],["Fort Augustus",57.1448064,-4.6805166,false]],
+    "map-2": [["Glengarry Castle Hotel",57.069086,-4.778156,true],["Glencoe",56.6615284,-4.9174463,false],["Glenfinnan Viaduct",56.8762172,-5.4317589,false]],
+    "map-3": [["Glengarry Castle Hotel",57.069086,-4.778156,true],["Urquhart Castle",57.3241399,-4.4420013,false]],
+    "map-4": [["Glengarry Castle Hotel",57.069086,-4.778156,true],["Ben Nevis",56.7968571,-5.0035505,false]],
+    "map-5": [["Glengarry Castle Hotel",57.069086,-4.778156,true],["Skye Games, Portree",57.4124,-6.1953,false]],
+    "map-6": [["Glengarry Castle Hotel",57.069086,-4.778156,true],["Culloden",57.4777898,-4.095711,false],["Glenlivet",57.3434444,-3.3385562,false],["Craigellachie Hotel",57.489248,-3.190163,true]],
+    "map-7": [["Craigellachie Hotel",57.489248,-3.190163,true],["The Macallan",57.4847802,-3.2067766,false]],
+    "map-8": [["Craigellachie Hotel",57.489248,-3.190163,true],["Aviemore",57.2005355,-3.8281798,false]],
+    "map-9": [["Craigellachie Hotel",57.489248,-3.190163,true],["Balmoral Castle",57.0396646,-3.2292362,false],["Aberdeen Airport",57.203715,-2.200215,false]]
+  };
+
+  function buildMap(id, pts){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var map = L.map(el, {scrollWheelZoom:false, attributionControl:false, zoomControl:false});
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:16}).addTo(map);
+    L.control.zoom({position:"topright"}).addTo(map);
+    var latlngs = [];
+    pts.forEach(function(p){
+      var name=p[0], lat=p[1], lng=p[2], isBase=p[3];
+      latlngs.push([lat,lng]);
+      L.circleMarker([lat,lng],{
+        radius:isBase?7:6,
+        color:"#fff", weight:2,
+        fillColor:isBase?INK:AMBER, fillOpacity:1
+      }).addTo(map).bindTooltip(name,{permanent:true,direction:"right",className:"pin-label",offset:[6,0]});
+    });
+    L.polyline(latlngs,{color:AMBER,weight:2.5,opacity:.7,dashArray:"5,6"}).addTo(map);
+    map.fitBounds(L.latLngBounds(latlngs).pad(0.28));
+  }
+  function initAll(){ for(var id in DAYS){ buildMap(id, DAYS[id]); } }
+  if(window.L){ initAll(); } else { window.addEventListener("load", initAll); }
+</script>
+</body>
+</html>
