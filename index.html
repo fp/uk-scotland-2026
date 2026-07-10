@@ -113,6 +113,25 @@
 
   footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--hair);font-size:13px;color:var(--mist);}
   @media print{header .contours{opacity:.1;}body{background:#fff;}.card,.panel{box-shadow:none;}.daymap{display:none;}}
+
+  .day-nav{display:none;}
+  @media(max-width:640px){
+    .day-nav{display:block;position:sticky;top:0;z-index:60;background:var(--ink);color:var(--white);padding:10px 14px 8px;box-shadow:0 2px 10px rgba(0,0,0,.18);}
+    .day-nav-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .day-nav-btn{background:rgba(251,249,244,.12);border:1px solid rgba(251,249,244,.32);color:var(--white);width:34px;height:34px;border-radius:50%;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer;}
+    .day-nav-btn:disabled{opacity:.3;cursor:default;}
+    .day-nav-info{text-align:center;flex:1;min-width:0;}
+    .day-nav-num{display:block;font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber-2);}
+    .day-nav-date{display:block;font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:15px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .day-nav-select{width:100%;margin-top:8px;padding:7px 10px;border-radius:3px;border:1px solid rgba(251,249,244,.32);background:rgba(251,249,244,.08);color:var(--white);font-family:"Inter",sans-serif;font-size:13px;}
+    .day-nav-select option{color:#12343b;}
+    body.paginated .day-section-label{display:none;}
+    body.paginated .timeline{margin-top:14px;padding-left:0;}
+    body.paginated .timeline::before{display:none;}
+    body.paginated .day{display:none;margin-bottom:0;}
+    body.paginated .day::before{display:none;}
+    body.paginated .day.active-day{display:block;margin-bottom:24px;}
+  }
 </style>
 </head>
 <body>
@@ -131,6 +150,18 @@
     </div>
   </div>
 </header>
+
+<div class="day-nav" id="dayNav">
+  <div class="day-nav-top">
+    <button type="button" id="prevDay" class="day-nav-btn" aria-label="Previous day">&#8249;</button>
+    <div class="day-nav-info">
+      <span class="day-nav-num" id="dayNavNum">Day 01</span>
+      <span class="day-nav-date" id="dayNavDate">Sat · 25 Jul</span>
+    </div>
+    <button type="button" id="nextDay" class="day-nav-btn" aria-label="Next day">&#8250;</button>
+  </div>
+  <select id="dayJump" class="day-nav-select" aria-label="Jump to day"></select>
+</div>
 
 <div class="wrap">
 
@@ -1039,10 +1070,12 @@
     "map-9": [["Craigellachie Hotel",57.489248,-3.190163,true],["Balmoral Castle",57.0396646,-3.2292362,false],["Aberdeen Airport",57.203715,-2.200215,false]]
   };
 
+  window.MAPS = window.MAPS || {};
   function buildMap(id, pts){
     var el = document.getElementById(id);
     if(!el) return;
     var map = L.map(el, {scrollWheelZoom:false, attributionControl:false, zoomControl:false});
+    window.MAPS[id] = map;
     L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",{maxZoom:16}).addTo(map);
     L.control.zoom({position:"topright"}).addTo(map);
     var latlngs = [];
@@ -1060,6 +1093,96 @@
   }
   function initAll(){ for(var id in DAYS){ buildMap(id, DAYS[id]); } }
   if(window.L){ initAll(); } else { window.addEventListener("load", initAll); }
+</script>
+
+<script>
+(function(){
+  var prevBtn = document.getElementById('prevDay');
+  var nextBtn = document.getElementById('nextDay');
+  var jumpSel = document.getElementById('dayJump');
+  var numEl = document.getElementById('dayNavNum');
+  var dateEl = document.getElementById('dayNavDate');
+  if(!prevBtn || !nextBtn || !jumpSel || !numEl || !dateEl) return;
+
+  var days = [];
+  var nodes = document.querySelectorAll('.wrap > .section-label, .wrap > .timeline');
+  var currentSection = '';
+  nodes.forEach(function(node){
+    if(node.classList.contains('section-label')){
+      currentSection = node.textContent.trim();
+      if(node.nextElementSibling && node.nextElementSibling.classList.contains('timeline')){
+        node.classList.add('day-section-label');
+      }
+    } else if(node.classList.contains('timeline')){
+      node.querySelectorAll(':scope > .day').forEach(function(d){
+        var numText = d.querySelector('.daynum');
+        var dateText = d.querySelector('.date');
+        var titleText = d.querySelector('.card-title');
+        days.push({
+          el: d,
+          section: currentSection,
+          num: numText ? numText.textContent.trim() : '',
+          date: dateText ? dateText.textContent.trim() : '',
+          title: titleText ? titleText.textContent.trim() : ''
+        });
+      });
+    }
+  });
+  if(!days.length) return;
+
+  var groups = {}, order = [];
+  days.forEach(function(d, i){
+    if(!groups[d.section]){ groups[d.section] = []; order.push(d.section); }
+    groups[d.section].push(i);
+  });
+  order.forEach(function(sec){
+    var og = document.createElement('optgroup');
+    og.label = sec;
+    groups[sec].forEach(function(i){
+      var d = days[i];
+      var opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = d.num + ' · ' + d.date + ' — ' + d.title;
+      og.appendChild(opt);
+    });
+    jumpSel.appendChild(og);
+  });
+
+  var current = 0;
+  function showDay(i){
+    if(i < 0 || i >= days.length) return;
+    days[current].el.classList.remove('active-day');
+    current = i;
+    var d = days[current];
+    d.el.classList.add('active-day');
+    numEl.textContent = d.num;
+    dateEl.textContent = d.date;
+    jumpSel.value = current;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === days.length - 1;
+    window.scrollTo(0, 0);
+    var mapDiv = d.el.querySelector('.daymap');
+    if(mapDiv && mapDiv.id && window.MAPS && window.MAPS[mapDiv.id]){
+      setTimeout(function(){ window.MAPS[mapDiv.id].invalidateSize(); }, 60);
+    }
+  }
+
+  prevBtn.addEventListener('click', function(){ showDay(current - 1); });
+  nextBtn.addEventListener('click', function(){ showDay(current + 1); });
+  jumpSel.addEventListener('change', function(){ showDay(parseInt(jumpSel.value, 10)); });
+
+  var mq = window.matchMedia('(max-width:640px)');
+  function applyMode(){
+    if(mq.matches){
+      document.body.classList.add('paginated');
+      showDay(current);
+    } else {
+      document.body.classList.remove('paginated');
+    }
+  }
+  if(mq.addEventListener){ mq.addEventListener('change', applyMode); } else { mq.addListener(applyMode); }
+  applyMode();
+})();
 </script>
 
 <style>
