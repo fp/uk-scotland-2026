@@ -119,6 +119,8 @@
     body.paginated .timeline::before{display:block !important;}
     body.paginated .day{display:block !important;margin-bottom:22px !important;}
     body.paginated .day::before{display:block !important;}
+    body.paginated header h1{display:block !important;}
+    body.paginated header .subline{display:block !important;}
   }
 
   .day-nav{position:sticky;top:0;z-index:60;background:var(--ink);color:var(--white);box-shadow:0 2px 10px rgba(0,0,0,.18);}
@@ -138,6 +140,10 @@
   body.paginated .day{display:none;margin-bottom:0;}
   body.paginated .day::before{display:none;}
   body.paginated .day.active-day{display:block;margin-bottom:24px;}
+  body.paginated header h1{display:none;}
+  body.paginated header .subline{display:none;}
+  body.paginated.day1-active header h1{display:block;}
+  body.paginated.day1-active header .subline{display:block;}
 </style>
 </head>
 <body>
@@ -150,9 +156,8 @@
     <p class="subline">Land in London and ease in, a working week in Leeds with Yorkshire day trips, then north to two Highland bases &mdash; lochs, mountains, a Highland games and a royal castle &mdash; before flying home from Aberdeen.</p>
     <div class="head-meta">
       <span><b>Sat 25 Jul</b> &rarr; <b>Mon 10 Aug 2026</b></span>
-      <span>2 travellers</span>
       <span>Fly in: <b>London (LHR)</b></span>
-      <span>Fly out: <b>Aberdeen (ABZ)</b></span>
+      <span>Fly out: <b>Aberdeen (ABZ)</b> &rarr; <b>Heathrow (LHR)</b></span>
     </div>
   </div>
 </header>
@@ -1184,6 +1189,7 @@
     current = i;
     var d = days[current];
     d.el.classList.add('active-day');
+    document.body.classList.toggle('day1-active', current === 0);
     numEl.textContent = d.num;
     dateEl.textContent = d.date;
     jumpSel.value = current;
