@@ -1,0 +1,106 @@
+[
+  {
+    "type": "section",
+    "label": "England · London"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-01-land-in-london-buckingham-palace.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-02-british-museum-the-national-gallery.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-03-windsor-castle-then-north-to-leeds.html"
+  },
+  {
+    "type": "section",
+    "label": "England · Leeds &amp; Yorkshire"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-04-paul-works-wife-s-day-york.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-05-wife-s-day-harrogate.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-06-wife-s-day-saltaire-leeds.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-07-leeds-wraps-up.html"
+  },
+  {
+    "type": "section",
+    "label": "Base 1 · Glengarry Castle Hotel, Invergarry"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-08-arrive-settle-loch-ness-south.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-09-glencoe-glenfinnan.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-10-loch-ness-north-culloden.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-11-fort-william-ben-nevis.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-12-isle-of-skye-highland-games.html"
+  },
+  {
+    "type": "section",
+    "label": "Base 2 · Craigellachie Hotel of Speyside, Aberlour"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-13-move-east-glenfarclas.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-14-fly-fishing-speyside-villages.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-15-flex-day-cairngorms.html"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-16-balmoral-then-fly-out.html"
+  },
+  {
+    "type": "section",
+    "label": "Journey home"
+  },
+  {
+    "type": "day",
+    "file": "pages/day-17-fly-home-aberdeen-london-houston.html"
+  },
+  {
+    "type": "section",
+    "label": "Bookings"
+  },
+  {
+    "type": "raw",
+    "file": "pages/bookings.html"
+  },
+  {
+    "type": "section",
+    "label": "Before you go"
+  },
+  {
+    "type": "raw",
+    "file": "pages/before-you-go.html"
+  }
+]
