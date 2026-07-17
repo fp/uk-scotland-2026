@@ -102,5 +102,13 @@
   {
     "type": "raw",
     "file": "pages/before-you-go.html"
+  },
+  {
+    "type": "section",
+    "label": "Weather &amp; Packing"
+  },
+  {
+    "type": "raw",
+    "file": "pages/weather.html"
   }
 ]

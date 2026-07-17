@@ -1,7 +1,7 @@
   :root{
     --ink:#12343b; --slate:#28393d; --stone:#f1ece1; --stone-2:#e7dfcd;
     --hair:#c9bea6; --amber:#b06a17; --amber-2:#cf8b2c; --heather:#6a4a80;
-    --mist:#5c6d6f; --white:#fbf9f4;
+    --mist:#5c6d6f; --white:#fbf9f4; --rain:#2f5d6b;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -169,3 +169,28 @@
     .lightbox-close{top:10px;right:10px;}
   }
   html.lb-lock,html.lb-lock body{overflow:hidden;}
+
+  .weather-intro{font-size:14.5px;color:var(--slate);margin:0 0 18px;max-width:60ch;}
+  .weather-status{font-family:"Spline Sans Mono",monospace;font-size:12.5px;color:var(--mist);margin:0 0 14px;}
+  .weather-table-wrap{overflow-x:auto;border:1px solid var(--stone-2);border-radius:3px;background:var(--white);}
+  table.weather-table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px;}
+  table.weather-table th{text-align:left;font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);padding:10px 14px;border-bottom:1px solid var(--hair);white-space:nowrap;}
+  table.weather-table td{padding:10px 14px;border-bottom:1px dashed #e5ddca;vertical-align:top;}
+  table.weather-table tr:last-child td{border-bottom:none;}
+  table.weather-table .wx-daynum{font-family:"Spline Sans Mono",monospace;font-size:11.5px;color:var(--amber);white-space:nowrap;}
+  table.weather-table .wx-date{white-space:nowrap;color:var(--slate);}
+  table.weather-table .wx-loc{color:var(--ink);font-weight:600;white-space:nowrap;}
+  table.weather-table .wx-forecast{white-space:nowrap;}
+  table.weather-table .wx-source{display:block;font-size:10.5px;color:var(--mist);font-style:italic;margin-top:2px;}
+  .wx-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:12.5px;font-weight:600;white-space:nowrap;color:var(--white);}
+  .wx-badge.smart-indoor{background:var(--heather);}
+  .wx-badge.city-casual{background:var(--amber-2);}
+  .wx-badge.highland-layers{background:var(--ink);}
+  .wx-badge.full-waterproof{background:var(--rain);}
+  .wx-badge.active-outdoor{background:var(--amber);}
+  .wx-badge.travel-comfort{background:var(--mist);}
+  .clothing-legend{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:640px){.clothing-legend{grid-template-columns:1fr;}}
+  .clothing-legend .legend-item{background:var(--white);border:1px solid var(--stone-2);border-radius:3px;padding:13px 16px;}
+  .clothing-legend .legend-item h4{margin:0 0 6px;font-size:14.5px;display:flex;align-items:center;gap:8px;}
+  .clothing-legend .legend-item p{margin:0;font-size:13px;color:var(--slate);line-height:1.5;}
