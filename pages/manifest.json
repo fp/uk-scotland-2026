@@ -108,7 +108,7 @@
     "label": "Weather &amp; Packing"
   },
   {
-    "type": "raw",
+    "type": "day",
     "file": "pages/weather.html"
   }
 ]

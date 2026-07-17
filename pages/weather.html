@@ -1,28 +1,37 @@
-<div class="panel" style="margin-bottom:0;">
-  <p class="weather-intro">Live forecast for each day of the trip, pulled fresh every time this page loads. Days within the next 16 days show an actual forecast; days further out show a 3-year average for that calendar date as a stand-in, clearly marked, until the real forecast comes into range. The clothing category in the last column is chosen automatically from that day's temperature, rain chance, wind, and planned activity.</p>
-  <p class="weather-status" id="weatherStatus">Loading weather&hellip;</p>
-  <div class="weather-table-wrap">
-    <table class="weather-table">
-      <thead>
-        <tr>
-          <th>Day</th>
-          <th>Date</th>
-          <th>Location</th>
-          <th>Forecast</th>
-          <th>Clothing</th>
-        </tr>
-      </thead>
-      <tbody id="weatherTbody">
-        <tr><td colspan="5" style="color:var(--mist);font-style:italic;">Fetching live weather&hellip;</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="clothing-legend">
-    <div class="legend-item"><h4><span class="wx-badge smart-indoor">🎩 Smart Layers</span></h4><p>Indoor/Formal &mdash; Palace and castle interiors, galleries, formal teas. Smart-casual outfit, a light jacket or cardigan for getting there, and a compact umbrella just in case.</p></div>
-    <div class="legend-item"><h4><span class="wx-badge city-casual">🧥 City Casual</span></h4><p>+ Umbrella &mdash; Everyday sightseeing in London, Leeds, York and Harrogate on mild, mostly-dry days. Comfortable walking clothes, a light layer, and a packable rain shell.</p></div>
-    <div class="legend-item"><h4><span class="wx-badge highland-layers">🧶 Highland Layers</span></h4><p>Scenic Highlands/Speyside stops (castles, viaducts, distilleries) on cool or showery days. Base layer + fleece or jumper, waterproof jacket, comfortable walking shoes.</p></div>
-    <div class="legend-item"><h4><span class="wx-badge full-waterproof">☔ Full Waterproofs</span></h4><p>Cold, wet and/or windy days anywhere on the trip. Waterproof jacket and trousers, warm hat, gloves, waterproof boots &mdash; Highland weather turns quickly.</p></div>
-    <div class="legend-item"><h4><span class="wx-badge active-outdoor">🥾 Active Outdoor Gear</span></h4><p>Hiking, the Highland Games, and fly fishing. Technical hiking layers, sturdy waterproof boots, a weatherproof shell &mdash; add warmth or waterproofs on top if it's cold or wet.</p></div>
-    <div class="legend-item"><h4><span class="wx-badge travel-comfort">✈️ Travel Comfort</span></h4><p>Flight and transfer days. Easy layers you can add or shed for the airport, the cabin, and changing temperatures.</p></div>
-  </div>
-</div>
+<div class="day pivot">
+      <div class="card">
+        <div class="card-head">
+          <span class="daynum">Reference</span><span class="date">Trip-wide</span>
+          <h2 class="card-title">Weather &amp; Packing</h2>
+          <p class="base">Live forecast for every day of the trip, with a suggested clothing category for each.</p>
+        </div>
+        <div class="card-body">
+          <p class="weather-intro">Pulled fresh every time this page loads. Days within the next 16 days show an actual forecast; days further out show a 3-year average for that calendar date as a stand-in, clearly marked, until the real forecast comes into range. The clothing category in the last column is chosen automatically from that day's temperature, rain chance, wind, and planned activity.</p>
+          <p class="weather-status" id="weatherStatus">Loading weather&hellip;</p>
+          <div class="weather-table-wrap">
+            <table class="weather-table">
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Date</th>
+                  <th>Location</th>
+                  <th>Forecast</th>
+                  <th>Clothing</th>
+                </tr>
+              </thead>
+              <tbody id="weatherTbody">
+                <tr><td colspan="5" style="color:var(--mist);font-style:italic;">Fetching live weather&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="clothing-legend">
+            <div class="legend-item"><h4><span class="wx-badge smart-indoor">🎩 Smart Layers</span></h4><p>Indoor/Formal &mdash; Palace and castle interiors, galleries, formal teas. Smart-casual outfit, a light jacket or cardigan for getting there, and a compact umbrella just in case.</p></div>
+            <div class="legend-item"><h4><span class="wx-badge city-casual">🧥 City Casual</span></h4><p>+ Umbrella &mdash; Everyday sightseeing in London, Leeds, York and Harrogate on mild, mostly-dry days. Comfortable walking clothes, a light layer, and a packable rain shell.</p></div>
+            <div class="legend-item"><h4><span class="wx-badge highland-layers">🧶 Highland Layers</span></h4><p>Scenic Highlands/Speyside stops (castles, viaducts, distilleries) on cool or showery days. Base layer + fleece or jumper, waterproof jacket, comfortable walking shoes.</p></div>
+            <div class="legend-item"><h4><span class="wx-badge full-waterproof">☔ Full Waterproofs</span></h4><p>Cold, wet and/or windy days anywhere on the trip. Waterproof jacket and trousers, warm hat, gloves, waterproof boots &mdash; Highland weather turns quickly.</p></div>
+            <div class="legend-item"><h4><span class="wx-badge active-outdoor">🥾 Active Outdoor Gear</span></h4><p>Hiking, the Highland Games, and fly fishing. Technical hiking layers, sturdy waterproof boots, a weatherproof shell &mdash; add warmth or waterproofs on top if it's cold or wet.</p></div>
+            <div class="legend-item"><h4><span class="wx-badge travel-comfort">✈️ Travel Comfort</span></h4><p>Flight and transfer days. Easy layers you can add or shed for the airport, the cabin, and changing temperatures.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
