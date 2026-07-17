@@ -1,14 +1,6 @@
 [
   {
     "type": "section",
-    "label": "Weather &amp; Packing"
-  },
-  {
-    "type": "day",
-    "file": "pages/weather.html"
-  },
-  {
-    "type": "section",
     "label": "England · London"
   },
   {
@@ -94,6 +86,14 @@
   {
     "type": "day",
     "file": "pages/day-17-fly-home-aberdeen-london-houston.html"
+  },
+  {
+    "type": "section",
+    "label": "Weather &amp; Packing"
+  },
+  {
+    "type": "day",
+    "file": "pages/weather.html"
   },
   {
     "type": "section",
