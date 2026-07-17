@@ -1,6 +1,14 @@
 [
   {
     "type": "section",
+    "label": "Weather &amp; Packing"
+  },
+  {
+    "type": "day",
+    "file": "pages/weather.html"
+  },
+  {
+    "type": "section",
     "label": "England · London"
   },
   {
@@ -92,7 +100,7 @@
     "label": "Bookings"
   },
   {
-    "type": "raw",
+    "type": "day",
     "file": "pages/bookings.html"
   },
   {
@@ -102,13 +110,5 @@
   {
     "type": "raw",
     "file": "pages/before-you-go.html"
-  },
-  {
-    "type": "section",
-    "label": "Weather &amp; Packing"
-  },
-  {
-    "type": "day",
-    "file": "pages/weather.html"
   }
 ]
