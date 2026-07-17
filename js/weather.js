@@ -1,11 +1,11 @@
 (function(){
   var CATEGORY_LABELS = {
-    'smart-indoor': '🎩 Smart Layers',
-    'city-casual': '🧥 City Casual',
-    'highland-layers': '🧶 Highland Layers',
-    'full-waterproof': '☔ Full Waterproofs',
-    'active-outdoor': '🥾 Active Outdoor Gear',
-    'travel-comfort': '✈️ Travel Comfort'
+    'smart-indoor': '🎩 Smart',
+    'city-casual': '🧥 Casual',
+    'highland-layers': '🧶 Highland',
+    'full-waterproof': '☔ Waterproof',
+    'active-outdoor': '🥾 Active',
+    'travel-comfort': '✈️ Travel'
   };
 
   var WMO = {
@@ -45,7 +45,7 @@
 
   function fmtDate(iso){
     var d = new Date(iso + 'T12:00:00Z');
-    return d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', timeZone:'UTC'});
+    return d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', timeZone:'UTC'}).replace(',', '');
   }
 
   function round(n){ return (n===null||n===undefined||isNaN(n)) ? null : Math.round(n); }
@@ -74,12 +74,12 @@
   }
 
   function wxSummary(wx){
-    if(!wx || wx.tMax === null) return { text: 'Weather unavailable' };
-    var wmo = WMO[wx.code] || ['—',''];
+    if(!wx || wx.tMax === null) return { text: 'Unavailable' };
+    var wmo = WMO[wx.code] || ['',''];
     var precipTxt = wx.precipProb !== null && wx.precipProb !== undefined ? (wx.precipProb + '% rain') : (wx.precipSum !== null && wx.precipSum !== undefined ? wx.precipSum.toFixed(1) + 'mm' : '');
-    var parts = [wmo[0], round(wx.tMin) + '–' + round(wx.tMax) + '°C'];
+    var parts = [round(wx.tMin) + '–' + round(wx.tMax) + '°C'];
     if(precipTxt) parts.push(precipTxt);
-    return { text: wmo[1] + ' ' + parts.join(' · ') };
+    return { text: (wmo[1] ? wmo[1] + ' ' : '') + parts.join(' · ') };
   }
 
   function todayISO(){
@@ -202,10 +202,9 @@
       var wx = wxByDate[d.date] || { tMax:null, tMin:null, precipProb:null, precipSum:null, windMax:null, code:null, source:null };
       var cat = pickCategory(d, wx);
       var summary = wxSummary(wx);
-      var sourceLabel = wx.source === 'forecast' ? 'Live forecast' : (wx.source === 'typical' ? 'Typical (3-yr avg, same date)' : 'Not available yet');
+      var sourceLabel = wx.source === 'forecast' ? 'Live forecast' : (wx.source === 'typical' ? 'Typical (3-yr avg)' : 'Not available yet');
       return '<tr>' +
-        '<td class="wx-daynum">Day ' + pad2(d.day) + '</td>' +
-        '<td class="wx-date">' + fmtDate(d.date) + '</td>' +
+        '<td class="wx-daycell"><span class="wx-daynum">Day ' + pad2(d.day) + '</span><span class="wx-date">' + fmtDate(d.date) + '</span></td>' +
         '<td class="wx-loc">' + d.loc + '</td>' +
         '<td class="wx-forecast">' + summary.text + '<span class="wx-source">' + sourceLabel + '</span></td>' +
         '<td><span class="wx-badge ' + cat + '">' + CATEGORY_LABELS[cat] + '</span></td>' +
