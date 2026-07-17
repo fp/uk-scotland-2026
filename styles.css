@@ -39,6 +39,8 @@
   .daynum{font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);}
   .date{font-family:"Spline Sans Mono",monospace;font-size:13px;color:var(--mist);}
   .card-title{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:21px;letter-spacing:-.01em;color:var(--ink);margin:2px 0 0;flex-basis:100%;}
+  .day-weather{flex-basis:100%;display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:6px 0 0;}
+  .day-weather .day-wx-text{font-size:13px;color:var(--slate);line-height:1.4;}
   .base{font-size:13px;color:var(--mist);margin:6px 0 0;flex-basis:100%;}
   .base b{color:var(--slate);font-weight:600;}
 
@@ -188,7 +190,7 @@
   .wx-loc{color:var(--ink);font-weight:600;font-size:13px;}
   .wx-forecast{font-size:13px;line-height:1.4;}
   .wx-source{display:block;font-size:10px;color:var(--mist);font-style:italic;margin-top:2px;}
-  .wx-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11.5px;font-weight:600;color:var(--white);line-height:1.3;}
+  .wx-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11.5px;font-weight:600;color:var(--white);line-height:1.3;cursor:help;}
   .wx-badge.smart-indoor{background:var(--heather);}
   .wx-badge.city-casual{background:var(--amber-2);}
   .wx-badge.highland-layers{background:var(--ink);}

@@ -8,6 +8,15 @@
     'travel-comfort': '✈️ Travel'
   };
 
+  var CATEGORY_DEFS = {
+    'smart-indoor': 'Smart Layers (Indoor/Formal) — palace and castle interiors, galleries, formal teas. Smart-casual outfit, a light jacket or cardigan for getting there, and a compact umbrella just in case.',
+    'city-casual': 'City Casual + Umbrella — everyday sightseeing on mild, mostly-dry days. Comfortable walking clothes, a light layer, and a packable rain shell.',
+    'highland-layers': 'Highland Layers — scenic Highlands/Speyside stops on cool or showery days. Base layer + fleece or jumper, waterproof jacket, comfortable walking shoes.',
+    'full-waterproof': 'Full Waterproofs — cold, wet and/or windy days anywhere on the trip. Waterproof jacket and trousers, warm hat, gloves, waterproof boots.',
+    'active-outdoor': 'Active Outdoor Gear — hiking, the Highland Games, and fly fishing. Technical hiking layers, sturdy waterproof boots, a weatherproof shell.',
+    'travel-comfort': 'Travel Comfort — flight and transfer days. Easy layers you can add or shed for the airport, the cabin, and changing temperatures.'
+  };
+
   var WMO = {
     0:['Clear','☀️'],1:['Mostly clear','🌤️'],2:['Partly cloudy','⛅'],3:['Overcast','☁️'],
     45:['Fog','🌫️'],48:['Fog','🌫️'],
@@ -50,6 +59,10 @@
 
   function round(n){ return (n===null||n===undefined||isNaN(n)) ? null : Math.round(n); }
 
+  function escapeAttr(s){
+    return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
   async function fetchJSON(url){
     var res = await fetch(url);
     if(!res.ok) throw new Error('Weather fetch failed: ' + res.status);
@@ -80,6 +93,10 @@
     var parts = [round(wx.tMin) + '–' + round(wx.tMax) + '°C'];
     if(precipTxt) parts.push(precipTxt);
     return { text: (wmo[1] ? wmo[1] + ' ' : '') + parts.join(' · ') };
+  }
+
+  function sourceLabelFor(wx){
+    return wx.source === 'forecast' ? 'Live forecast' : (wx.source === 'typical' ? 'Typical (3-yr avg)' : 'Not available yet');
   }
 
   function todayISO(){
@@ -165,11 +182,40 @@
     return out;
   }
 
-  window.initWeather = async function(){
+  function renderTable(wxByDate){
     var tbody = document.getElementById('weatherTbody');
     var status = document.getElementById('weatherStatus');
     if(!tbody) return;
 
+    var rows = DAYS.map(function(d){
+      var wx = wxByDate[d.date] || { tMax:null, tMin:null, precipProb:null, precipSum:null, windMax:null, code:null, source:null };
+      var cat = pickCategory(d, wx);
+      var summary = wxSummary(wx);
+      return '<tr>' +
+        '<td class="wx-daycell"><span class="wx-daynum">Day ' + pad2(d.day) + '</span><span class="wx-date">' + fmtDate(d.date) + '</span></td>' +
+        '<td class="wx-loc">' + d.loc + '</td>' +
+        '<td class="wx-forecast">' + summary.text + '<span class="wx-source">' + sourceLabelFor(wx) + '</span></td>' +
+        '<td><span class="wx-badge ' + cat + '" title="' + escapeAttr(CATEGORY_DEFS[cat]) + '">' + CATEGORY_LABELS[cat] + '</span></td>' +
+        '</tr>';
+    });
+
+    tbody.innerHTML = rows.join('');
+    if(status) status.textContent = 'Updated ' + new Date().toLocaleString('en-GB', {dateStyle:'medium', timeStyle:'short'});
+  }
+
+  function renderInlineDayWeather(wxByDate){
+    DAYS.forEach(function(d){
+      var el = document.querySelector('.day-weather[data-wx-day="' + d.day + '"]');
+      if(!el) return;
+      var wx = wxByDate[d.date] || { tMax:null, tMin:null, precipProb:null, precipSum:null, windMax:null, code:null, source:null };
+      var cat = pickCategory(d, wx);
+      var summary = wxSummary(wx);
+      el.innerHTML = '<span class="wx-badge ' + cat + '" title="' + escapeAttr(CATEGORY_DEFS[cat]) + '">' + CATEGORY_LABELS[cat] + '</span>' +
+        '<span class="day-wx-text">' + summary.text + '<span class="wx-source">' + sourceLabelFor(wx) + '</span></span>';
+    });
+  }
+
+  window.initWeather = async function(){
     var today = todayISO();
     var byLoc = {};
     DAYS.forEach(function(d){
@@ -198,20 +244,7 @@
       } catch(e){ console.error('Climatology fetch failed for', key, e); }
     }));
 
-    var rows = DAYS.map(function(d){
-      var wx = wxByDate[d.date] || { tMax:null, tMin:null, precipProb:null, precipSum:null, windMax:null, code:null, source:null };
-      var cat = pickCategory(d, wx);
-      var summary = wxSummary(wx);
-      var sourceLabel = wx.source === 'forecast' ? 'Live forecast' : (wx.source === 'typical' ? 'Typical (3-yr avg)' : 'Not available yet');
-      return '<tr>' +
-        '<td class="wx-daycell"><span class="wx-daynum">Day ' + pad2(d.day) + '</span><span class="wx-date">' + fmtDate(d.date) + '</span></td>' +
-        '<td class="wx-loc">' + d.loc + '</td>' +
-        '<td class="wx-forecast">' + summary.text + '<span class="wx-source">' + sourceLabel + '</span></td>' +
-        '<td><span class="wx-badge ' + cat + '">' + CATEGORY_LABELS[cat] + '</span></td>' +
-        '</tr>';
-    });
-
-    tbody.innerHTML = rows.join('');
-    if(status) status.textContent = 'Updated ' + new Date().toLocaleString('en-GB', {dateStyle:'medium', timeStyle:'short'});
+    renderTable(wxByDate);
+    renderInlineDayWeather(wxByDate);
   };
 })();
