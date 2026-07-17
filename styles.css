@@ -39,8 +39,11 @@
   .daynum{font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);}
   .date{font-family:"Spline Sans Mono",monospace;font-size:13px;color:var(--mist);}
   .card-title{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:21px;letter-spacing:-.01em;color:var(--ink);margin:2px 0 0;flex-basis:100%;}
-  .day-weather{flex-basis:100%;display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:6px 0 0;}
+  .day-weather{flex-basis:100%;display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px;margin:6px 0 0;}
   .day-weather .day-wx-text{font-size:13px;color:var(--slate);line-height:1.4;}
+  .day-wx-multi{display:flex;flex-direction:column;gap:3px;}
+  .day-wx-row{display:flex;align-items:baseline;gap:6px;}
+  .wx-loc-label{font-family:"Spline Sans Mono",monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);white-space:nowrap;}
   .base{font-size:13px;color:var(--mist);margin:6px 0 0;flex-basis:100%;}
   .base b{color:var(--slate);font-weight:600;}
 

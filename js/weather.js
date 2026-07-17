@@ -33,7 +33,8 @@
   var DAYS = [
     {day:1, date:'2026-07-25', loc:'London', region:'south', activity:'indoor-formal', lat:51.5135, lon:-0.1199},
     {day:2, date:'2026-07-26', loc:'London', region:'south', activity:'indoor-formal', lat:51.5135, lon:-0.1199},
-    {day:3, date:'2026-07-27', loc:'Windsor', region:'south', activity:'indoor-formal', lat:51.4839, lon:-0.6044},
+    {day:3, date:'2026-07-27', loc:'Windsor', region:'south', activity:'indoor-formal', lat:51.4839, lon:-0.6044,
+      to:{loc:'Leeds', lat:53.7997, lon:-1.5492}},
     {day:4, date:'2026-07-28', loc:'York', region:'south', activity:'city-walking', lat:53.9600, lon:-1.0873},
     {day:5, date:'2026-07-29', loc:'Harrogate', region:'south', activity:'outdoor-scenic', lat:53.9919, lon:-1.5378},
     {day:6, date:'2026-07-30', loc:'Saltaire / Leeds', region:'south', activity:'city-walking', lat:53.7997, lon:-1.5492},
@@ -43,11 +44,14 @@
     {day:10, date:'2026-08-03', loc:'Loch Ness / Culloden', region:'north', activity:'outdoor-scenic', lat:57.3241, lon:-4.4420},
     {day:11, date:'2026-08-04', loc:'Fort William / Ben Nevis', region:'north', activity:'outdoor-active', lat:56.7968, lon:-5.0035},
     {day:12, date:'2026-08-05', loc:'Portree, Skye', region:'north', activity:'outdoor-active', lat:57.4124, lon:-6.1953},
-    {day:13, date:'2026-08-06', loc:'Glenfarclas', region:'north', activity:'indoor-formal', lat:57.4230, lon:-3.3176},
+    {day:13, date:'2026-08-06', loc:'Glengarry', region:'north', activity:'indoor-formal', lat:57.0691, lon:-4.7782,
+      to:{loc:'Craigellachie', lat:57.4892, lon:-3.1901}},
     {day:14, date:'2026-08-07', loc:'Craigellachie / Aberlour', region:'north', activity:'outdoor-active', lat:57.4892, lon:-3.1901},
     {day:15, date:'2026-08-08', loc:'Aviemore / Cairngorms', region:'north', activity:'outdoor-scenic', lat:57.2005, lon:-3.8281},
-    {day:16, date:'2026-08-09', loc:'Balmoral', region:'north', activity:'indoor-formal', lat:57.0396, lon:-3.2292},
-    {day:17, date:'2026-08-10', loc:'Aberdeen', region:'north', activity:'travel', lat:57.2037, lon:-2.2002}
+    {day:16, date:'2026-08-09', loc:'Craigellachie', region:'north', activity:'indoor-formal', lat:57.4892, lon:-3.1901,
+      to:{loc:'Aberdeen', lat:57.2037, lon:-2.2002}},
+    {day:17, date:'2026-08-10', loc:'Aberdeen', region:'north', activity:'travel', lat:57.2037, lon:-2.2002,
+      to:{loc:'Houston', lat:29.7604, lon:-95.3698}}
   ];
 
   function pad2(n){ return String(n).padStart(2,'0'); }
@@ -97,6 +101,23 @@
 
   function sourceLabelFor(wx){
     return wx.source === 'forecast' ? 'Live forecast' : (wx.source === 'typical' ? 'Typical (3-yr avg)' : 'Not available yet');
+  }
+
+  function locLine(label, wx){
+    return '<div class="day-wx-row"><span class="wx-loc-label">' + label + '</span><span class="day-wx-text">' + wxSummary(wx).text + '</span></div>';
+  }
+
+  function forecastBlockHTML(d, wxFor){
+    var wx1 = wxFor(d.lat, d.lon, d.date);
+    if(d.to){
+      var wx2 = wxFor(d.to.lat, d.to.lon, d.date);
+      return '<div class="day-wx-multi">' +
+        locLine(d.loc, wx1) +
+        locLine(d.to.loc, wx2) +
+        '<span class="wx-source">' + sourceLabelFor(wx1) + '</span>' +
+        '</div>';
+    }
+    return '<span class="day-wx-text">' + wxSummary(wx1).text + '<span class="wx-source">' + sourceLabelFor(wx1) + '</span></span>';
   }
 
   function todayISO(){
@@ -182,19 +203,19 @@
     return out;
   }
 
-  function renderTable(wxByDate){
+  function renderTable(wxFor){
     var tbody = document.getElementById('weatherTbody');
     var status = document.getElementById('weatherStatus');
     if(!tbody) return;
 
     var rows = DAYS.map(function(d){
-      var wx = wxByDate[d.date] || { tMax:null, tMin:null, precipProb:null, precipSum:null, windMax:null, code:null, source:null };
-      var cat = pickCategory(d, wx);
-      var summary = wxSummary(wx);
+      var wx1 = wxFor(d.lat, d.lon, d.date);
+      var cat = pickCategory(d, wx1);
+      var locText = d.loc + (d.to ? ' → ' + d.to.loc : '');
       return '<tr>' +
         '<td class="wx-daycell"><span class="wx-daynum">Day ' + pad2(d.day) + '</span><span class="wx-date">' + fmtDate(d.date) + '</span></td>' +
-        '<td class="wx-loc">' + d.loc + '</td>' +
-        '<td class="wx-forecast">' + summary.text + '<span class="wx-source">' + sourceLabelFor(wx) + '</span></td>' +
+        '<td class="wx-loc">' + locText + '</td>' +
+        '<td class="wx-forecast">' + forecastBlockHTML(d, wxFor) + '</td>' +
         '<td><span class="wx-badge ' + cat + '" title="' + escapeAttr(CATEGORY_DEFS[cat]) + '">' + CATEGORY_LABELS[cat] + '</span></td>' +
         '</tr>';
     });
@@ -203,27 +224,30 @@
     if(status) status.textContent = 'Updated ' + new Date().toLocaleString('en-GB', {dateStyle:'medium', timeStyle:'short'});
   }
 
-  function renderInlineDayWeather(wxByDate){
+  function renderInlineDayWeather(wxFor){
     DAYS.forEach(function(d){
       var el = document.querySelector('.day-weather[data-wx-day="' + d.day + '"]');
       if(!el) return;
-      var wx = wxByDate[d.date] || { tMax:null, tMin:null, precipProb:null, precipSum:null, windMax:null, code:null, source:null };
-      var cat = pickCategory(d, wx);
-      var summary = wxSummary(wx);
+      var wx1 = wxFor(d.lat, d.lon, d.date);
+      var cat = pickCategory(d, wx1);
       el.innerHTML = '<span class="wx-badge ' + cat + '" title="' + escapeAttr(CATEGORY_DEFS[cat]) + '">' + CATEGORY_LABELS[cat] + '</span>' +
-        '<span class="day-wx-text">' + summary.text + '<span class="wx-source">' + sourceLabelFor(wx) + '</span></span>';
+        forecastBlockHTML(d, wxFor);
     });
   }
 
   window.initWeather = async function(){
     var today = todayISO();
     var byLoc = {};
+    function addPoint(lat, lon, date){
+      var key = lat + ',' + lon;
+      if(!byLoc[key]) byLoc[key] = { lat: lat, lon: lon, forecastDates: [], climoDates: [] };
+      var diff = daysBetween(today, date);
+      var bucket = (diff >= 0 && diff <= 15) ? byLoc[key].forecastDates : byLoc[key].climoDates;
+      if(bucket.indexOf(date) === -1) bucket.push(date);
+    }
     DAYS.forEach(function(d){
-      var key = d.lat + ',' + d.lon;
-      if(!byLoc[key]) byLoc[key] = { lat: d.lat, lon: d.lon, forecastDates: [], climoDates: [] };
-      var diff = daysBetween(today, d.date);
-      if(diff >= 0 && diff <= 15) byLoc[key].forecastDates.push(d.date);
-      else byLoc[key].climoDates.push(d.date);
+      addPoint(d.lat, d.lon, d.date);
+      if(d.to) addPoint(d.to.lat, d.to.lon, d.date);
     });
 
     var wxByDate = {};
@@ -233,18 +257,22 @@
       try {
         if(loc.forecastDates.length){
           var f = await getForecastRange(loc.lat, loc.lon, loc.forecastDates.sort());
-          Object.assign(wxByDate, f);
+          Object.keys(f).forEach(function(date){ wxByDate[key + '|' + date] = f[date]; });
         }
       } catch(e){ console.error('Forecast fetch failed for', key, e); }
       try {
         if(loc.climoDates.length){
           var c = await getClimatology(loc.lat, loc.lon, loc.climoDates.sort());
-          Object.keys(c).forEach(function(d){ if(c[d]) wxByDate[d] = c[d]; });
+          Object.keys(c).forEach(function(date){ if(c[date]) wxByDate[key + '|' + date] = c[date]; });
         }
       } catch(e){ console.error('Climatology fetch failed for', key, e); }
     }));
 
-    renderTable(wxByDate);
-    renderInlineDayWeather(wxByDate);
+    function wxFor(lat, lon, date){
+      return wxByDate[lat + ',' + lon + '|' + date] || { tMax:null, tMin:null, precipProb:null, precipSum:null, windMax:null, code:null, source:null };
+    }
+
+    renderTable(wxFor);
+    renderInlineDayWeather(wxFor);
   };
 })();
