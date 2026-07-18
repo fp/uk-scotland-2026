@@ -54,11 +54,16 @@
   .base b{color:var(--slate);font-weight:600;}
 
   .daymap{height:190px;background:#dfe6e2;border-top:1px solid #efe9db;border-bottom:1px solid #efe9db;}
+  .daymap-overview{height:360px;}
   .leaflet-container{font-family:"Inter",sans-serif;}
   .pin-label{background:rgba(18,52,59,.9);color:#fff;border:none;border-radius:2px;
     font-family:"Spline Sans Mono",monospace;font-size:10px;letter-spacing:.03em;
     padding:2px 5px;box-shadow:none;white-space:nowrap;}
   .pin-label::before{display:none;}
+  .map-legend{display:flex;gap:20px;flex-wrap:wrap;padding:10px 20px 0;font-size:12px;color:var(--mist);}
+  .map-legend span{display:inline-flex;align-items:center;gap:7px;}
+  .map-legend .swatch{display:inline-block;width:22px;height:0;border-top:3px solid var(--ink);}
+  .map-legend .swatch.dotted{border-top:2px dotted var(--amber);}
 
   .stops{list-style:none;margin:0;padding:6px 20px 8px;}
   .stop{padding:13px 0;border-bottom:1px dashed #e5ddca;}
@@ -111,6 +116,9 @@
   .flag b{color:var(--amber);}
   ul.plain{margin:8px 0 0;padding-left:18px;font-size:14px;}
   ul.plain li{margin:5px 0;}
+  ul.plain ul.plain{margin-top:6px;}
+  .anchor-list>li{margin:14px 0;}
+  .anchor-list>li:first-child{margin-top:8px;}
   .open{color:var(--heather);font-weight:600;}
 
   footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--hair);font-size:13px;color:var(--mist);}
@@ -195,6 +203,11 @@
   table.weather-table th:nth-child(4){width:22%;}
   table.weather-table td{padding:8px 8px;border-bottom:1px dashed #e5ddca;vertical-align:top;word-break:break-word;}
   table.weather-table tr:last-child td{border-bottom:none;}
+  table.weather-table.travel-table th:nth-child(1){width:13%;}
+  table.weather-table.travel-table th:nth-child(2){width:24%;}
+  table.weather-table.travel-table th:nth-child(3){width:10%;}
+  table.weather-table.travel-table th:nth-child(4){width:38%;}
+  table.weather-table.travel-table th:nth-child(5){width:15%;}
   .wx-daycell{display:flex;flex-direction:column;gap:2px;}
   .wx-daynum{font-family:"Spline Sans Mono",monospace;font-size:11px;color:var(--amber);white-space:nowrap;}
   .wx-date{font-size:11px;color:var(--mist);white-space:nowrap;}
