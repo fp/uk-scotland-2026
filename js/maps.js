@@ -26,7 +26,7 @@
   var OVERVIEW_SPOKES = {
     0: [["Buckingham Palace",51.5014,-0.1419],["British Museum",51.5194,-0.1270],["The National Gallery",51.5089,-0.1283],["Windsor Castle",51.4839,-0.6044],["King's Cross Station",51.5308,-0.1238]],
     1: [["York",53.9623,-1.0819],["Harrogate",53.9908,-1.5373],["Saltaire",53.8371,-1.7907],["Royal Armouries, Leeds",53.791,-1.524]],
-    2: [["Fort Augustus",57.1448064,-4.6805166],["Glencoe",56.6615284,-4.9174463],["Glenfinnan Viaduct",56.8762172,-5.4317589],["Urquhart Castle",57.3241399,-4.4420013],["Culloden",57.4777898,-4.095711],["Ben Nevis",56.7968571,-5.0035505],["Skye Games, Portree",57.4124,-6.1953]],
+    2: [["Fort Augustus",57.1448064,-4.6805166],["Glencoe",56.6615284,-4.9174463],["Glenfinnan Viaduct",56.8762172,-5.4317589],["Urquhart Castle",57.3241399,-4.4420013],["Culloden",57.4777898,-4.095711],["Ben Nevis",56.7968571,-5.0035505],["Skye Games, Portree",57.4124,-6.1953],["The Three Chimneys, Colbost",57.4435328,-6.6416829]],
     3: [["Glenfarclas Distillery",57.4230,-3.3176],["Speyside Cooperage",57.4825,-3.1811],["Walkers Shortbread",57.4703,-3.2256],["Aviemore",57.2005355,-3.8281798],["Balmoral Castle",57.0396646,-3.2292362]],
     4: [["Aberdeen Airport",57.203715,-2.200215]]
   };
