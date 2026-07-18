@@ -113,10 +113,10 @@
   },
   {
     "type": "section",
-    "label": "Before you go"
+    "label": "Outstanding Items"
   },
   {
-    "type": "raw",
+    "type": "day",
     "file": "pages/before-you-go.html"
   }
 ]
