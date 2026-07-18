@@ -89,6 +89,14 @@
   },
   {
     "type": "section",
+    "label": "Historical Information"
+  },
+  {
+    "type": "day",
+    "file": "pages/historical-information.html"
+  },
+  {
+    "type": "section",
     "label": "Weather &amp; Packing"
   },
   {
