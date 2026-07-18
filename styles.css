@@ -44,6 +44,9 @@
   .day-wx-multi{display:flex;flex-direction:column;gap:3px;}
   .day-wx-row{display:flex;align-items:baseline;gap:6px;}
   .wx-loc-label{font-family:"Spline Sans Mono",monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);white-space:nowrap;}
+  .day-history{flex-basis:100%;margin:4px 0 0;display:flex;flex-wrap:wrap;gap:10px;}
+  .history-inline-link{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--heather);text-decoration:none;border-bottom:1px dashed var(--heather);cursor:pointer;}
+  .history-inline-link:hover{color:var(--ink);border-bottom-color:var(--ink);}
   .base{font-size:13px;color:var(--mist);margin:6px 0 0;flex-basis:100%;}
   .base b{color:var(--slate);font-weight:600;}
 
@@ -205,3 +208,33 @@
   .clothing-legend .legend-item{background:var(--white);border:1px solid var(--stone-2);border-radius:3px;padding:13px 16px;}
   .clothing-legend .legend-item h4{margin:0 0 6px;font-size:14.5px;display:flex;align-items:center;gap:8px;}
   .clothing-legend .legend-item p{margin:0;font-size:13px;color:var(--slate);line-height:1.5;}
+
+  .history-list{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
+  .history-item{background:var(--white);border:1px solid var(--stone-2);border-radius:3px;padding:16px 18px;}
+  .history-item h3{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:16.5px;color:var(--ink);margin:0 0 6px;}
+  .history-item p{font-size:13.5px;color:var(--slate);line-height:1.55;margin:0 0 10px;}
+  .history-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+  .history-tag{font-family:"Spline Sans Mono",monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--heather);background:#f1eaf6;padding:3px 8px;border-radius:20px;}
+  .history-link{display:inline-block;font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--white);background:var(--ink);border-radius:3px;padding:8px 14px;text-decoration:none;cursor:pointer;}
+  .history-link:hover{background:var(--heather);}
+
+  .history-overlay{display:none;position:fixed;inset:0;z-index:9998;background:rgba(18,52,59,.94);align-items:center;justify-content:center;padding:24px;}
+  .history-overlay.open{display:flex;}
+  .history-panel{background:var(--white);border-radius:6px;width:100%;max-width:760px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative;}
+  .history-panel-scroll{overflow-y:auto;padding:40px 34px 36px;}
+  .history-panel-content h1{font-family:"Bricolage Grotesque",serif;font-weight:800;font-size:25px;color:var(--ink);margin:0 0 6px;padding-right:30px;}
+  .history-panel-content .history-meta{font-family:"Spline Sans Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin:0 0 22px;}
+  .history-panel-content h2{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:18.5px;color:var(--ink);margin:26px 0 10px;padding-top:14px;border-top:1px solid var(--stone-2);}
+  .history-panel-content h2:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+  .history-panel-content h3{font-family:"Bricolage Grotesque",serif;font-weight:700;font-size:15px;color:var(--ink);margin:16px 0 6px;}
+  .history-panel-content p{font-size:14.5px;line-height:1.65;color:var(--slate);margin:0 0 12px;}
+  .history-panel-content ul{margin:0 0 14px;padding-left:20px;font-size:14.5px;line-height:1.6;color:var(--slate);}
+  .history-panel-content li{margin:4px 0;}
+  .history-panel-content table{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:13.5px;}
+  .history-panel-content th{text-align:left;background:var(--stone);font-family:"Spline Sans Mono",monospace;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--mist);padding:8px 10px;border-bottom:2px solid var(--hair);}
+  .history-panel-content td{padding:9px 10px;border-bottom:1px solid var(--stone-2);vertical-align:top;color:var(--slate);}
+  @media(max-width:640px){
+    .history-overlay{padding:0;}
+    .history-panel{max-width:100%;max-height:100vh;height:100%;border-radius:0;}
+    .history-panel-scroll{padding:56px 20px 30px;}
+  }
