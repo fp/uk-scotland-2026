@@ -53,11 +53,22 @@
   <img id="lightboxImg" src="" alt="">
 </div>
 
+<div class="history-overlay" id="historyOverlay">
+  <div class="history-panel">
+    <button type="button" class="lightbox-close history-close" id="historyClose" aria-label="Close">&times;</button>
+    <div class="history-panel-scroll">
+      <div class="history-panel-content" id="historyOverlayContent"></div>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="js/maps.js"></script>
 <script src="js/daynav.js"></script>
 <script src="js/lightbox.js"></script>
 <script src="js/weather.js"></script>
+<script src="js/history-data.js"></script>
+<script src="js/history.js"></script>
 <script src="js/loader.js"></script>
 </body>
 </html>

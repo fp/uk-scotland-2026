@@ -46,6 +46,7 @@
     if(window.initMaps) window.initMaps();
     if(window.initDayNav) window.initDayNav();
     if(window.initWeather) window.initWeather();
+    if(window.initHistory) window.initHistory();
   }
 
   function start(){
