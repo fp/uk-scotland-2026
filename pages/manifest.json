@@ -1,6 +1,14 @@
 [
   {
     "type": "section",
+    "label": "Trip Overview"
+  },
+  {
+    "type": "day",
+    "file": "pages/trip-overview.html"
+  },
+  {
+    "type": "section",
     "label": "England · London"
   },
   {
