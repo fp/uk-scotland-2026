@@ -113,5 +113,46 @@ window.HISTORY_ENTRIES = [
       '<li>Pacing: the Highland days involve real driving — build in buffer time for photos and short walks.</li>' +
       '</ul>' +
       '<p>Wishing you an incredible trip full of history and emotion.</p>'
+  },
+  {
+    id: 'yorkshire-heritage',
+    title: 'Yorkshire &amp; Leeds: Viking, Medieval &amp; Industrial Heritage',
+    summary: 'Viking-age York, a Georgian spa town, and a mill village built by a Victorian industrialist for his workers — the history behind your four days based in Leeds.',
+    tags: ['History', 'Yorkshire'],
+    locations: ['Leeds', 'York', 'Harrogate', 'Saltaire'],
+    dayLinks: [4, 5, 6],
+    daySummaries: {
+      4: [
+        'York Minster is one of the largest Gothic cathedrals in northern Europe, built over some 250 years.',
+        'The Shambles: a narrow medieval street of overhanging timber shopfronts, popularly said to have inspired Diagon Alley.',
+        'JORVIK Viking Centre sits on the Coppergate dig site — the Viking army that captured York in AD 866 made it the capital of their kingdom, which they called Jorvik.'
+      ],
+      5: [
+        'Harrogate grew into a fashionable spa town from the 17th century on the strength of its mineral springs, leaving the Georgian and Victorian streets you’ll walk today.',
+        'Bettys’ Harrogate branch, on Montpellier Parade, is the original — opened in 1919 by Frederick Belmont; the York branch (Day 4) followed in 1936, so both are genuinely different rooms, not a repeat stop.'
+      ],
+      6: [
+        'Salts Mill was built in 1853 by textile magnate Sir Titus Salt as the centrepiece of Saltaire, a model village he built to house his mill workers away from Bradford’s pollution — now a UNESCO World Heritage Site (2001).',
+        'Leeds was one of the world’s great Industrial Revolution textile centres; the Royal Armouries moved its national collection here from the Tower of London in 1996, and Kirkgate Market is where Michael Marks opened his first Penny Bazaar stall in 1884 — the start of Marks &amp; Spencer.'
+      ]
+    },
+    html: '<h2>Introduction</h2>' +
+      '<p>Your four days out of Leeds aren’t Jacobite country, but the region carries its own deep layers of history — Viking-age York, a Victorian spa town, and one of the most complete Industrial Revolution stories in England. This entry gives the background for York, Harrogate, Saltaire and Leeds itself; dining picks for these days live in each day’s own “Eat” section.</p>' +
+      '<h2>York (Day 04): Vikings, Minster &amp; Medieval Streets</h2>' +
+      '<p>A Viking army — the “Great Heathen Army” — captured York in AD 866 and made it the capital of their kingdom, which they called Jorvik. Viking rule lasted until 954, but the name and the layer of history beneath the modern streets remain: JORVIK Viking Centre sits directly on the Coppergate excavation, one of the richest Viking-age archaeological finds in Europe, and rebuilds the streets of Jorvik around the actual finds.</p>' +
+      '<p>Above ground, York Minster is one of the largest Gothic cathedrals in northern Europe, built in stages over roughly 250 years. The Shambles, a narrow medieval street of overhanging timber-framed shopfronts (once the city’s butchers’ street — the meat hooks are still visible on some buildings), is popularly said to have inspired Diagon Alley. The nearly complete circuit of medieval city walls is one of the best-preserved in England and free to walk any stretch of.</p>' +
+      '<h2>Harrogate (Day 05): England’s Original Spa Town</h2>' +
+      '<p>Harrogate grew from a scattering of villages into a fashionable spa resort from the 17th century onward, after its sulphur and chalybeate mineral springs became known for their supposed health benefits. The Royal Pump Room and the wide, green expanse of the Stray are legacies of that spa-town era, along with the elegant Georgian and Victorian streets of the town centre and the Montpellier Quarter.</p>' +
+      '<p>Bettys is Harrogate’s own institution: Swiss confectioner Frederick Belmont opened the original café on Montpellier Parade in 1919. It’s a different building — and a different branch — from the one you’ll visit in York on Day 4, which didn’t open until 1936. Both are worth the queue.</p>' +
+      '<h2>Saltaire &amp; Leeds (Day 06): Industrial Revolution to UNESCO Village</h2>' +
+      '<p>Saltaire is a genuinely rare survival: in 1853, textile magnate Sir Titus Salt built Salts Mill — then one of the largest factories in the world — and, around it, a complete model village with housing, a school, a hospital and a park for his workers, deliberately sited away from the smoke and slums of nearby Bradford. Cloth production stopped in 1986, and the mill now houses shops, cafés and one of the largest collections of David Hockney’s art anywhere. The village became a UNESCO World Heritage Site in 2001.</p>' +
+      '<p>Leeds itself was one of the great engines of the Industrial Revolution, growing into one of the world’s largest wool and textile-trading centres. Two very different survivors of that boom are on your route: the Royal Armouries Museum, which relocated the nation’s entire arms-and-armour collection here from the Tower of London when it opened in 1996 (space at the Tower had simply run out), and Kirkgate Market — one of Europe’s largest covered markets — where a young trader named Michael Marks opened his “Penny Bazaar” stall in 1884, the true starting point of Marks &amp; Spencer.</p>' +
+      '<h2>Practical Tips</h2>' +
+      '<ul>' +
+      '<li>JORVIK Viking Centre requires pre-booked, timed tickets — there’s no walk-up admission, so book online before Day 4.</li>' +
+      '<li>Salts Diner, on the second floor of Salts Mill, is worth booking ahead for lunch (email diner@saltsmill.org.uk) — it gets busy and doubles as a Hockney gallery while you eat.</li>' +
+      '<li>Bettys doesn’t take reservations for casual visits; expect a queue at both branches, worse on weekends.</li>' +
+      '</ul>' +
+      '<p>Two very different days, two very different Englands — enjoy both.</p>'
   }
 ];
