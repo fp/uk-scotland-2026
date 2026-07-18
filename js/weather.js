@@ -63,6 +63,8 @@
 
   function round(n){ return (n===null||n===undefined||isNaN(n)) ? null : Math.round(n); }
 
+  function toF(c){ return (c===null||c===undefined||isNaN(c)) ? null : Math.round(c*9/5+32); }
+
   function escapeAttr(s){
     return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
@@ -94,7 +96,10 @@
     if(!wx || wx.tMax === null) return { text: 'Unavailable' };
     var wmo = WMO[wx.code] || ['',''];
     var precipTxt = wx.precipProb !== null && wx.precipProb !== undefined ? (wx.precipProb + '% rain') : (wx.precipSum !== null && wx.precipSum !== undefined ? wx.precipSum.toFixed(1) + 'mm' : '');
-    var parts = [round(wx.tMin) + '–' + round(wx.tMax) + '°C'];
+    var tMinC = round(wx.tMin), tMaxC = round(wx.tMax);
+    var tMinF = toF(tMinC), tMaxF = toF(tMaxC);
+    var tempTxt = tMinC + '–' + tMaxC + '°C (' + tMinF + '–' + tMaxF + '°F)';
+    var parts = [tempTxt];
     if(precipTxt) parts.push(precipTxt);
     return { text: (wmo[1] ? wmo[1] + ' ' : '') + parts.join(' · ') };
   }
