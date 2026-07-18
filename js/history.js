@@ -64,8 +64,11 @@
       var matches = entries.filter(function(entry){ return (entry.dayLinks || []).indexOf(dayNum) !== -1; });
       if(!matches.length) return;
       el.innerHTML = matches.map(function(entry){
-        return '<a href="javascript:void(0)" class="history-inline-link" data-history-id="' + entry.id + '">📜 ' + entry.title + ' →</a>';
-      }).join(' ');
+        var linkHtml = '<a href="javascript:void(0)" class="history-inline-link" data-history-id="' + entry.id + '">📜 ' + entry.title + ' →</a>';
+        var items = (entry.daySummaries && entry.daySummaries[dayNum]) || [];
+        var summaryHtml = items.length ? ('<ul class="day-history-summary">' + items.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ul>') : '';
+        return '<div class="day-history-block">' + linkHtml + summaryHtml + '</div>';
+      }).join('');
     });
   };
 })();

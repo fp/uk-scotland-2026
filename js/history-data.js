@@ -2,12 +2,52 @@ window.HISTORY_ENTRIES = [
   {
     id: 'jacobites-outlander',
     title: 'The Jacobites &amp; Outlander Filming Locations',
-    summary: 'Real Jacobite history — the 1745 Rising, the Battle of Culloden, and the Tower of London executions — paired with where Outlander filmed it, from Doune Castle to Glencoe.',
-    tags: ['History', 'Outlander'],
-    locations: ['Culloden', 'Glencoe', 'Doune Castle', 'Midhope Castle', 'Tower of London', 'Edinburgh'],
-    dayLinks: [9, 10],
+    summary: 'Real Jacobite history — the 1745 Rising, the Battle of Culloden, and the Tower of London executions — paired with Outlander filming locations and day-by-day dining recommendations from Buckingham Palace to Balmoral.',
+    tags: ['History', 'Outlander', 'Dining'],
+    locations: ['Culloden', 'Glencoe', 'Glenfinnan', 'Windsor Castle', 'Buckingham Palace', 'Urquhart Castle', 'Balmoral'],
+    dayLinks: [1, 2, 3, 8, 9, 10, 12, 15, 16],
+    daySummaries: {
+      1: [
+        'Buckingham Palace: the King’s official London residence, built 1703 and expanded by George IV — see the Throne Room and Picture Gallery.',
+        'St James’s Park: lovely views back to the Palace — look for pelicans on the lake.',
+        'Restaurant tip: The Wolseley or Brasserie Zédel for a classic dinner.'
+      ],
+      2: [
+        'British Museum: don’t miss the Rosetta Stone, the Parthenon Sculptures, and the Egyptian mummies.',
+        'National Gallery: Van Gogh’s Sunflowers, Turner and the Impressionists — free entry after 5pm.',
+        'Platform 9¾ at King’s Cross is a fun Harry Potter photo stop en route.'
+      ],
+      3: [
+        'Windsor Castle: the oldest and largest occupied castle in the world — visit the State Apartments and St George’s Chapel.',
+        'Worth checking: the Changing of the Guard sometimes runs on Mondays at Windsor.',
+        'Restaurant tip: The Boatman (riverside) or The Ivy Royal Windsor Brasserie.'
+      ],
+      8: [
+        'Fort Augustus &amp; the Caledonian Canal: watch boats work through the staircase locks — a relaxed first evening.',
+        'Dining tip: The Lock Inn, canalside, for classic fish &amp; chips.'
+      ],
+      9: [
+        'Glencoe: dramatic scenery and the site of the 1692 Glencoe Massacre, part of the wider Jacobite conflicts.',
+        'Glenfinnan Viaduct: a famous Harry Potter filming location — the Jacobite Steam Train often crosses.',
+        'Dining tip: Moss for lunch in Glencoe; Crannog or The Geographer for dinner in Fort William.'
+      ],
+      10: [
+        'Culloden Battlefield: the decisive, moving end of the 1745 Jacobite Rising — visitor centre and clan grave markers.',
+        'Urquhart Castle: a medieval ruin on Loch Ness with some of the best loch views anywhere.'
+      ],
+      12: [
+        'Skye Highland Games: caber toss, piping and dancing — an authentic link to Jacobite-era clan culture.',
+        'Portree: a charming harbour town, good for lunch or photos before or after the games.'
+      ],
+      15: [
+        'Cairngorms / Aviemore: the free-ranging reindeer herd and the funicular make for a relaxed day.'
+      ],
+      16: [
+        'Balmoral Castle: the King’s Aberdeenshire residence — grounds and exhibition open on your visit day.'
+      ]
+    },
     html: '<h2>Introduction</h2>' +
-      '<p>This guide adds historical context to two threads running through the trip: the Jacobites and the 1745 Rising, and the real places that became <em>Outlander</em> filming locations. The two connect directly — the series is inspired by the Rising and the Battle of Culloden, one of the most dramatic events in Scottish history.</p>' +
+      '<p>This guide adds historical context to two threads running through the trip: the Jacobites and the 1745 Rising, and the real places that became <em>Outlander</em> filming locations. The two connect directly — the series is inspired by the Rising and the Battle of Culloden, one of the most dramatic events in Scottish history. Day-by-day highlights and dining recommendations are woven in throughout.</p>' +
       '<p>You will visit places where the real history happened and, in a few cases, where the iconic scenes were filmed.</p>' +
       '<h2>The Jacobites: Historical Context</h2>' +
       '<h3>Who were the Jacobites?</h3>' +
@@ -30,6 +70,37 @@ window.HISTORY_ENTRIES = [
       '<tr><td>Edinburgh (Holyrood)</td><td>Capital scenes</td><td>Bonnie Prince Charlie occupied Holyrood Palace in 1745. Walk the Royal Mile.</td></tr>' +
       '<tr><td>Glencoe &amp; the Highlands</td><td>Dramatic landscapes</td><td>A Jacobite recruitment area. Glencoe has its own tragic history — the 1692 massacre.</td></tr>' +
       '</tbody></table>' +
+      '<h2>Day-by-Day Highlights &amp; Dining</h2>' +
+      '<p>Woven into your actual itinerary — the historical notes and restaurant picks for each day that touches this history.</p>' +
+      '<h3>Day 01 &middot; Buckingham Palace</h3>' +
+      '<ul><li>Official London residence of King Charles III, built 1703 as Buckingham House and expanded by George IV — see the Throne Room, Picture Gallery and lavish State Rooms.</li>' +
+      '<li>St James’s Park: one of London’s most beautiful royal parks, with excellent views of the Palace — look for pelicans on the lake.</li>' +
+      '<li>Dining: The Wolseley (near Green Park) for classic British/European; Brasserie Zédel (Piccadilly) for Art Deco surroundings and good-value French brasserie food; Fortnum &amp; Mason for afternoon tea or a light dinner.</li></ul>' +
+      '<h3>Day 02 &middot; London Museums &amp; Afternoon Tea</h3>' +
+      '<ul><li>British Museum highlights: the Rosetta Stone, the Parthenon Sculptures (Elgin Marbles), and the Egyptian mummies.</li>' +
+      '<li>National Gallery: focus on the Zurbáran exhibition, then free entry to the collection after 5pm — don’t miss Van Gogh’s Sunflowers, Turner, and the Impressionists.</li>' +
+      '<li>Platform 9¾ at King’s Cross: a fun Harry Potter photo stop (the trolley in the wall).</li></ul>' +
+      '<h3>Day 03 &middot; Windsor Castle</h3>' +
+      '<ul><li>The oldest and largest occupied castle in the world (over 900 years) and a residence of King Charles III — visit the State Apartments and St George’s Chapel (site of royal weddings and burials).</li>' +
+      '<li>Worth checking on the day: the Changing of the Guard sometimes runs on Mondays at Windsor.</li>' +
+      '<li>Dining near Windsor Castle: The Boatman (riverside, great Thames views), The Ivy Royal Windsor Brasserie, or A la Russe for a special meal.</li></ul>' +
+      '<h3>Day 08 &middot; Arrive &amp; Settle — Loch Ness South</h3>' +
+      '<ul><li>Fort Augustus &amp; the Caledonian Canal: beautiful staircase locks and boat-watching — a relaxed first evening in the Highlands.</li>' +
+      '<li>Dining: The Lock Inn, canalside, for classic fish &amp; chips.</li></ul>' +
+      '<h3>Day 09 &middot; Glencoe &amp; Glenfinnan</h3>' +
+      '<ul><li>Glencoe: a dramatic landscape and the site of the 1692 Glencoe Massacre, part of the wider Jacobite-era conflicts. Stunning for photos and short walks.</li>' +
+      '<li>Glenfinnan Viaduct: a famous Harry Potter filming location — the Jacobite Steam Train often crosses; arrive early for parking.</li>' +
+      '<li>Dining: Moss for lunch in Glencoe; Crannog at Garrison West or The Geographer for dinner in Fort William.</li></ul>' +
+      '<h3>Day 10 &middot; Loch Ness North &amp; Culloden</h3>' +
+      '<ul><li>Culloden Battlefield: the decisive battle of the 1745 Jacobite Rising (16 April 1746) — Bonnie Prince Charlie’s army was defeated here. The visitor centre and the clan grave markers make for a very moving visit.</li>' +
+      '<li>Urquhart Castle: a medieval ruin on the shore of Loch Ness with some of the best loch views anywhere, and Outlander-worthy atmosphere.</li></ul>' +
+      '<h3>Day 12 &middot; Isle of Skye Highland Games</h3>' +
+      '<ul><li>Skye Highland Games (Portree): authentic Highland tradition — caber toss, piping, dancing — connected to the clan culture of the Jacobite era.</li>' +
+      '<li>Portree: a charming harbour town, good for lunch or photos.</li></ul>' +
+      '<h3>Day 15 &middot; Flex Day — Cairngorms</h3>' +
+      '<ul><li>Cairngorms / Aviemore: beautiful scenery, the free-ranging reindeer herd, and the funicular — a relaxed day.</li></ul>' +
+      '<h3>Day 16 &middot; Balmoral, then Fly Out</h3>' +
+      '<ul><li>Balmoral Castle: a royal residence in Aberdeenshire with a strong royal connection — the grounds and exhibition are open on General Admission days.</li></ul>' +
       '<h3>Practical Tips for Your Trip</h3>' +
       '<ul>' +
       '<li>At Culloden: visit the visitor centre first to understand the context before walking the battlefield.</li>' +
@@ -42,6 +113,13 @@ window.HISTORY_ENTRIES = [
       '<li>Books: <em>Outlander</em> (Diana Gabaldon), <em>Culloden</em> (John Prebble)</li>' +
       '<li>Podcast: The Jacobite Podcast, or History Hit’s episodes on Culloden</li>' +
       '<li>Documentary: <em>Culloden</em> (1964) by Peter Watkins</li>' +
+      '</ul>' +
+      '<h3>Final Recommendations</h3>' +
+      '<ul>' +
+      '<li>Culloden and Glencoe are the strongest Jacobite history sites on the trip — prioritize time and emotion here.</li>' +
+      '<li>Outlander / Harry Potter fans: Doune Castle and Glenfinnan are highlights if a small detour is possible.</li>' +
+      '<li>Scotland has excellent seafood and modern Scottish cooking — book ahead at The Geographer or Crannog when in the Fort William area.</li>' +
+      '<li>Pacing: the Highland days involve real driving — build in buffer time for photos and short walks.</li>' +
       '</ul>' +
       '<p>Wishing you an incredible trip full of history and emotion.</p>'
   }
