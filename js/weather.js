@@ -43,10 +43,12 @@
     {day:9, date:'2026-08-02', loc:'Glencoe', region:'north', activity:'outdoor-scenic', lat:56.6615, lon:-4.9174},
     {day:10, date:'2026-08-03', loc:'Loch Ness / Culloden', region:'north', activity:'outdoor-scenic', lat:57.3241, lon:-4.4420},
     {day:11, date:'2026-08-04', loc:'Fort William / Ben Nevis', region:'north', activity:'outdoor-active', lat:56.7968, lon:-5.0035},
-    {day:12, date:'2026-08-05', loc:'Portree, Skye', region:'north', activity:'outdoor-active', lat:57.4124, lon:-6.1953},
+    {day:12, date:'2026-08-05', loc:'Portree, Skye', region:'north', activity:'outdoor-active', lat:57.4124, lon:-6.1953,
+      note:"Dinner after: The Three Chimneys (Michelin-recognised), Colbost — about 3 hr from the hotel, too far to swing back and change first. Games gear all day; if you want a small step up for dinner, pack one easy smart-casual layer to swap into en route rather than a full outfit."},
     {day:13, date:'2026-08-06', loc:'Glengarry', region:'north', activity:'indoor-formal', lat:57.0691, lon:-4.7782,
       to:{loc:'Craigellachie', lat:57.4892, lon:-3.1901}},
-    {day:14, date:'2026-08-07', loc:'Craigellachie / Aberlour', region:'north', activity:'outdoor-active', lat:57.4892, lon:-3.1901},
+    {day:14, date:'2026-08-07', loc:'Craigellachie / Aberlour', region:'north', activity:'outdoor-active', lat:57.4892, lon:-3.1901,
+      secondary:'smart-indoor', secondaryNote:"GEAMAIR tasting menu, in-house at the hotel that evening — easy to change before dinner. Pack a smart-casual outfit alongside the day's outdoor gear."},
     {day:15, date:'2026-08-08', loc:'Aviemore / Cairngorms', region:'north', activity:'outdoor-scenic', lat:57.2005, lon:-3.8281},
     {day:16, date:'2026-08-09', loc:'Craigellachie', region:'north', activity:'indoor-formal', lat:57.4892, lon:-3.1901,
       to:{loc:'Aberdeen', lat:57.2037, lon:-2.2002}},
@@ -217,11 +219,16 @@
       var wx1 = wxFor(d.lat, d.lon, d.date);
       var cat = pickCategory(d, wx1);
       var locText = d.loc + (d.to ? ' → ' + d.to.loc : '');
+      var badges = '<span class="wx-badge ' + cat + '" title="' + escapeAttr(CATEGORY_DEFS[cat]) + '">' + CATEGORY_LABELS[cat] + '</span>';
+      if(d.secondary){
+        badges += '<span class="wx-badge ' + d.secondary + '" title="' + escapeAttr(d.secondaryNote || CATEGORY_DEFS[d.secondary]) + '">' + CATEGORY_LABELS[d.secondary] + '</span>';
+      }
+      var noteHTML = d.note ? '<div class="wx-day-note">' + escapeAttr(d.note) + '</div>' : '';
       return '<tr>' +
         '<td class="wx-daycell"><span class="wx-daynum">Day ' + pad2(d.day) + '</span><span class="wx-date">' + fmtDate(d.date) + '</span></td>' +
         '<td class="wx-loc">' + locText + '</td>' +
         '<td class="wx-forecast">' + forecastBlockHTML(d, wxFor) + '</td>' +
-        '<td><span class="wx-badge ' + cat + '" title="' + escapeAttr(CATEGORY_DEFS[cat]) + '">' + CATEGORY_LABELS[cat] + '</span></td>' +
+        '<td>' + badges + noteHTML + '</td>' +
         '</tr>';
     });
 
@@ -235,8 +242,13 @@
       if(!el) return;
       var wx1 = wxFor(d.lat, d.lon, d.date);
       var cat = pickCategory(d, wx1);
-      el.innerHTML = '<span class="wx-badge ' + cat + '" title="' + escapeAttr(CATEGORY_DEFS[cat]) + '">' + CATEGORY_LABELS[cat] + '</span>' +
-        forecastBlockHTML(d, wxFor);
+      var html = '<span class="wx-badge ' + cat + '" title="' + escapeAttr(CATEGORY_DEFS[cat]) + '">' + CATEGORY_LABELS[cat] + '</span>';
+      if(d.secondary){
+        html += '<span class="wx-badge ' + d.secondary + '" title="' + escapeAttr(d.secondaryNote || CATEGORY_DEFS[d.secondary]) + '">' + CATEGORY_LABELS[d.secondary] + '</span>';
+      }
+      html += forecastBlockHTML(d, wxFor);
+      if(d.note){ html += '<div class="wx-day-note">' + escapeAttr(d.note) + '</div>'; }
+      el.innerHTML = html;
     });
   }
 
