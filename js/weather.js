@@ -30,6 +30,14 @@
     95:['Thunderstorm','⛈️'],96:['Thunderstorm','⛈️'],99:['Thunderstorm','⛈️']
   };
 
+  // Fixed clock-time slots (24h, local). Sunrise is handled separately since it moves with the date/location.
+  var TIME_SLOTS = [
+    {key:'midmorning', label:'Mid-morning', hour:9},
+    {key:'noon', label:'Noon', hour:12},
+    {key:'midafternoon', label:'Mid-afternoon', hour:15},
+    {key:'evening', label:'Evening', hour:18}
+  ];
+
   var DAYS = [
     {day:1, date:'2026-07-25', loc:'London', region:'south', activity:'indoor-formal', lat:51.5135, lon:-0.1199},
     {day:2, date:'2026-07-26', loc:'London', region:'south', activity:'indoor-formal', lat:51.5135, lon:-0.1199},
@@ -103,15 +111,45 @@
     var tempTxt = tMinC + '–' + tMaxC + '°C (' + tMinF + '–' + tMaxF + '°F)';
     var parts = [tempTxt];
     if(precipTxt) parts.push(precipTxt);
-    return { text: (wmo[1] ? wmo[1] + ' ' : '') + parts.join(' · ') };
+    return { text: (wmo[1] ? wmo[1] + ' ' : '') + 'Day range: ' + parts.join(' · ') };
+  }
+
+  function slotText(slot){
+    if(!slot || slot.temp === null || slot.temp === undefined){ return 'n/a'; }
+    var wmo = WMO[slot.code] || ['',''];
+    var tF = toF(slot.temp);
+    var tempTxt = slot.temp + '°C (' + tF + '°F)';
+    var precipTxt = (slot.precipProb !== null && slot.precipProb !== undefined) ? (slot.precipProb + '% rain') : '';
+    return (wmo[1] ? wmo[1] + ' ' : '') + tempTxt + (precipTxt ? ' · ' + precipTxt : '');
   }
 
   function sourceLabelFor(wx){
     return wx.source === 'forecast' ? 'Live forecast' : (wx.source === 'typical' ? 'Typical (3-yr avg)' : 'Not available yet');
   }
 
-  function locLine(label, wx){
-    return '<div class="day-wx-row"><span class="wx-loc-label">' + label + '</span><span class="day-wx-text">' + wxSummary(wx).text + '</span></div>';
+  // One row: a time-of-day label (with clock time in parens) + its conditions.
+  function wxRow(label, text){
+    return '<div class="day-wx-row"><span class="wx-loc-label">' + label + '</span><span class="day-wx-text">' + text + '</span></div>';
+  }
+
+  // Renders one location's block: a heading (if multi-location day) followed by
+  // sunrise + the four fixed time-of-day slots, or the old single daily-range line
+  // when we only have a daily aggregate (climatology days, or a fetch that failed).
+  function locationBlockHTML(label, wx){
+    var heading = label ? '<div class="wx-loc-heading">' + label + '</div>' : '';
+    if(!wx || wx.tMax === null){
+      return heading + wxRow('Day', 'Unavailable');
+    }
+    if(wx.slots){
+      var rows = '';
+      var sunriseLabel = wx.sunriseTime ? 'Sunrise (' + wx.sunriseTime + ')' : 'Sunrise';
+      rows += wxRow(sunriseLabel, slotText(wx.slots.sunrise));
+      TIME_SLOTS.forEach(function(def){
+        rows += wxRow(def.label + ' (' + pad2(def.hour) + ':00)', slotText(wx.slots[def.key]));
+      });
+      return heading + rows;
+    }
+    return heading + wxRow('Day', wxSummary(wx).text);
   }
 
   function forecastBlockHTML(d, wxFor){
@@ -119,12 +157,15 @@
     if(d.to){
       var wx2 = wxFor(d.to.lat, d.to.lon, d.date);
       return '<div class="day-wx-multi">' +
-        locLine(d.loc, wx1) +
-        locLine(d.to.loc, wx2) +
+        locationBlockHTML(d.loc, wx1) +
+        locationBlockHTML(d.to.loc, wx2) +
         '<span class="wx-source">' + sourceLabelFor(wx1) + '</span>' +
         '</div>';
     }
-    return '<span class="day-wx-text">' + wxSummary(wx1).text + '<span class="wx-source">' + sourceLabelFor(wx1) + '</span></span>';
+    return '<div class="day-wx-multi">' +
+      locationBlockHTML(null, wx1) +
+      '<span class="wx-source">' + sourceLabelFor(wx1) + '</span>' +
+      '</div>';
   }
 
   function todayISO(){
@@ -142,10 +183,42 @@
     return year + '-' + parts[1] + '-' + parts[2];
   }
 
+  // Nearest whole hour to an "HH:MM" (or "YYYY-MM-DDTHH:MM") timestamp, for looking sunrise
+  // up in the hourly array (which is only ever on the hour).
+  function nearestHour(timeStr){
+    var hm = timeStr.split('T').pop().split(':');
+    var h = parseInt(hm[0], 10), m = parseInt(hm[1], 10);
+    if(isNaN(h)) return null;
+    if(m >= 30) h = (h + 1) % 24;
+    return h;
+  }
+
+  function hourlySlot(hourly, hTimes, dateISO, hour){
+    if(hour === null || hour === undefined) return null;
+    var target = dateISO + 'T' + pad2(hour) + ':00';
+    var idx = hTimes.indexOf(target);
+    if(idx === -1) return null;
+    return {
+      temp: round(hourly.temperature_2m ? hourly.temperature_2m[idx] : null),
+      precipProb: hourly.precipitation_probability ? hourly.precipitation_probability[idx] : null,
+      code: hourly.weathercode ? hourly.weathercode[idx] : null
+    };
+  }
+
+  function buildSlots(dateISO, sunriseISO, hourly, hTimes){
+    var slots = {};
+    slots.sunrise = sunriseISO ? hourlySlot(hourly, hTimes, dateISO, nearestHour(sunriseISO)) : null;
+    TIME_SLOTS.forEach(function(def){
+      slots[def.key] = hourlySlot(hourly, hTimes, dateISO, def.hour);
+    });
+    return slots;
+  }
+
   async function getForecastRange(lat, lon, dates){
     var start = dates[0], end = dates[dates.length-1];
     var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
-      '&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,windspeed_10m_max,weathercode' +
+      '&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,windspeed_10m_max,weathercode,sunrise' +
+      '&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m' +
       '&timezone=Europe%2FLondon&start_date=' + start + '&end_date=' + end;
     var json = await fetchJSON(url);
     var out = {};
@@ -157,9 +230,17 @@
         precipProb: json.daily.precipitation_probability_max ? json.daily.precipitation_probability_max[i] : null,
         windMax: json.daily.windspeed_10m_max ? round(json.daily.windspeed_10m_max[i]) : null,
         code: json.daily.weathercode ? json.daily.weathercode[i] : null,
+        sunriseTime: json.daily.sunrise && json.daily.sunrise[i] ? json.daily.sunrise[i].split('T').pop() : null,
         source: 'forecast'
       };
     });
+    if(json.hourly && json.hourly.time){
+      Object.keys(out).forEach(function(dateISO){
+        var entry = out[dateISO];
+        var sunriseISO = json.daily.sunrise ? (json.daily.sunrise[(json.daily.time || []).indexOf(dateISO)] || null) : null;
+        entry.slots = buildSlots(dateISO, sunriseISO, json.hourly, json.hourly.time);
+      });
+    }
     return out;
   }
 
@@ -197,6 +278,8 @@
         if(!vals.length) return null;
         return vals.reduce(function(a,b){ return a+b; }, 0) / vals.length;
       };
+      // Climatology stays a single daily range — no hourly value to average across three
+      // different years meaningfully, and it's already an approximation this far out.
       out[d] = {
         tMax: round(avg('tMax')),
         tMin: round(avg('tMin')),
