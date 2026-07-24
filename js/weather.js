@@ -44,7 +44,7 @@
     {day:10, date:'2026-08-03', loc:'Loch Ness / Culloden', region:'north', activity:'outdoor-scenic', lat:57.3241, lon:-4.4420},
     {day:11, date:'2026-08-04', loc:'Fort William / Ben Nevis', region:'north', activity:'outdoor-active', lat:56.7968, lon:-5.0035},
     {day:12, date:'2026-08-05', loc:'Portree, Skye', region:'north', activity:'outdoor-active', lat:57.4124, lon:-6.1953,
-      note:"Dinner after: The Three Chimneys (Michelin-recognised), Colbost — about 3 hr from the hotel, too far to swing back and change first. Games gear all day; if you want a small step up for dinner, pack one easy smart-casual layer to swap into en route rather than a full outfit."},
+      note:"Dinner after: The Three Chimneys (Michelin-recognised), Colbost — about 3 hr from the hotel, too far to change fully first. Likely wearing the kilt (probably the formal one) for the Games — that's already dinner-appropriate, so no full outfit change needed. Pack a waterproof/day jacket to wear over it at the Games, and swap to the formal jacket before dinner."},
     {day:13, date:'2026-08-06', loc:'Glengarry', region:'north', activity:'indoor-formal', lat:57.0691, lon:-4.7782,
       to:{loc:'Craigellachie', lat:57.4892, lon:-3.1901}},
     {day:14, date:'2026-08-07', loc:'Craigellachie / Aberlour', region:'north', activity:'outdoor-active', lat:57.4892, lon:-3.1901,
